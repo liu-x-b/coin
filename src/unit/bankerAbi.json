@@ -15,6 +15,11 @@
 				"internalType": "address",
 				"name": "_feeInFeeAddress",
 				"type": "address"
+			},
+			{
+				"internalType": "contract ICOIN",
+				"name": "_router",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -36,33 +41,14 @@
 	{
 		"inputs": [
 			{
-				"internalType": "contract IERC20",
-				"name": "_token",
+				"internalType": "address",
+				"name": "_user",
 				"type": "address"
 			}
 		],
-		"name": "adminGetToken",
+		"name": "bankerModelCalcLast",
 		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "bankerBack",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -198,20 +184,6 @@
 	},
 	{
 		"inputs": [],
-		"name": "gerOwner",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getMyReward",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "heightPeriods",
 		"outputs": [
 			{
@@ -318,6 +290,11 @@
 				"internalType": "uint256",
 				"name": "contraryRatio",
 				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "time",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -385,16 +362,16 @@
 		"type": "function"
 	},
 	{
-		"inputs": [
+		"inputs": [],
+		"name": "router",
+		"outputs": [
 			{
-				"internalType": "address",
-				"name": "_ownerNew",
+				"internalType": "contract ICOIN",
+				"name": "",
 				"type": "address"
 			}
 		],
-		"name": "setOwnerNew",
-		"outputs": [],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -424,11 +401,6 @@
 			},
 			{
 				"internalType": "uint256",
-				"name": "totalAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
 				"name": "userIndex",
 				"type": "uint256"
 			}
@@ -437,7 +409,13 @@
 		"type": "function"
 	},
 	{
-		"inputs": [],
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_user",
+				"type": "address"
+			}
+		],
 		"name": "viewCalc",
 		"outputs": [
 			{

@@ -3,6 +3,7 @@ const address = require('./address.json')
 const freeAbi = require('./freeAbi.json')
 const bankerAbi = require('./bankerAbi.json')
 const shopAbi = require('./shopAbi.json')
+const routerAbi = require('./routerAbi.json')
 const IERC20 = require('./IERC20.json')
 const Web3 = require('web3')
 
@@ -96,18 +97,18 @@ const getNetwork = () => {
   })
 }
 
-// let oklinkInfo=[{
-//     chainId: '0x61',
-//     chainName: 'BSC',
-//     nativeCurrency:
-//         {
-//             name: 'BNB',
-//             symbol: 'BNB',
-//             decimals: 18
-//         },
-//     rpcUrls: ['https://bsc-dataseed1.binance.org/'],
-//     blockExplorerUrls: ['https://bscscan.com/'],
-// }]
+let oklinkInfo=[{
+    chainId: '0x61',
+    chainName: 'BSC',
+    nativeCurrency:
+        {
+            name: 'BNB',
+            symbol: 'BNB',
+            decimals: 18
+        },
+    rpcUrls: ['https://bsc-dataseed1.binance.org/'],
+    blockExplorerUrls: ['https://bscscan.com/'],
+}]
 // let oklinkInfo=[{
 //     chainId: '0x4',
 //     chainName: 'Rinkeby',
@@ -122,7 +123,7 @@ const getNetwork = () => {
 // }]
 
 
-// window.ethereum.request({method: 'wallet_addEthereumChain', params:oklinkInfo})
+window.ethereum.request({method: 'wallet_addEthereumChain', params:oklinkInfo})
 
 
 const connectWallet = () => {
@@ -180,6 +181,8 @@ let contracts = {
   bankerContract: web3 ? new web3.eth.Contract(bankerAbi, address.banker) : '',
   shopAddress: address.shop,
   shopContract: web3 ? new web3.eth.Contract(shopAbi, address.shop) : '',
+  routerAddress: address.router,
+  routerContract: web3 ? new web3.eth.Contract(routerAbi, address.router) : '',
 }
 
 const commonCallAndHandler = (method, ...params) => {
@@ -209,10 +212,15 @@ const TokenAllowance = (_address) => {
   return commonCallAndHandler(contracts.TokenContract.methods.allowance,currWalletAddress, _address);
 }
 
+// 查余额
+const TokenBalance = () => { 
+  return commonCallAndHandler(contracts.TokenContract.methods.balanceOf,currWalletAddress);
+}
+
 // 授权
 const TokenApprove = ( _address ) => { 
   let bigNumber = web3.utils.toBN;
-  var amount = new bigNumber(big('99999999999').times(10**18));
+  var amount = new bigNumber(big('9999999999999999999999').times(10**18));
   return commonSend(contracts.TokenContract.methods.approve,_address,amount );
 }
 
@@ -225,7 +233,7 @@ const USDTAllowance = (_address) => {
 // 授权
 const USDTApprove = ( _address ) => { 
   let bigNumber = web3.utils.toBN;
-  var amount = new bigNumber(big('99999999999').times(10**18));
+  var amount = new bigNumber(big('9999999999999999999999').times(10**18));
   return commonSend(contracts.USDTContract.methods.approve,_address,amount );
 }
 
@@ -278,7 +286,7 @@ const freeLottery = () => {
 }
 // 查询自己的奖励
 const freeViewCalc = () => { 
-  return commonCallAndHandler(contracts.freeContract.methods.viewCalc );
+  return commonCallAndHandler(contracts.freeContract.methods.viewCalc ,currWalletAddress);
 } 
 // 领取自己奖励
 const freeGetMyReward = () => { 
@@ -291,6 +299,11 @@ const freeViewMyHistoryLength = () => {
 // 查询自己历史
 const freeViewMyHistory = (index) => { 
   return commonCallAndHandler(contracts.freeContract.methods.myHistory,currWalletAddress,index);
+}
+
+// 查询链上时间
+const viewNowTime = () => { 
+  return commonCallAndHandler(contracts.freeContract.methods.viewTime);
 }
 
 
@@ -344,7 +357,7 @@ const bankMaxDeposit = (_bool) => {
 }
 // 查询自己的奖励
 const bankViewCalc = () => { 
-  return commonCallAndHandler(contracts.bankerContract.methods.viewCalc );
+  return commonCallAndHandler(contracts.bankerContract.methods.viewCalc ,currWalletAddress);
 } 
 // 领取自己奖励
 const bankGetMyReward = () => { 
@@ -371,6 +384,18 @@ const bankerQuit = () => {
   return commonSend(contracts.bankerContract.methods.quit );
 } 
 
+
+
+//                        router
+// 查询可领取量
+const routerViewCalc = () => { 
+  return commonCallAndHandler(contracts.routerContract.methods.viewTotalCalc);
+}
+
+// 提币
+const routerGetReward = () => { 
+  return commonSend(contracts.routerContract.methods.getMyTotalReward );
+} 
 
 
 
@@ -415,9 +440,13 @@ export default {
   getCurrWalletAddress,
   connectWallet,
 
+  // nowTime
+  viewNowTime,
+
   // token
   TokenAllowance,
   TokenApprove,
+  TokenBalance,
 
   // USDT
   USDTAllowance,
@@ -458,4 +487,9 @@ export default {
   bankViewMyHistory,
   bankerChangeRatio,
   bankerQuit,
+
+
+  // router 
+  routerViewCalc,
+  routerGetReward,
 }

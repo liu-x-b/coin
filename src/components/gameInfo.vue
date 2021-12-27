@@ -1,4 +1,11 @@
 <template>
+	<div>
+	<div class="wallte">
+				<div class="wallte-link" v-if="myAddress == undefined" @click="linkPay">
+					wallet address
+				</div>
+				<div class="wallte-link" v-else>{{ myAddress }}</div>
+			</div>
 	<div class="gameinfo-main">
 		<div class="game-info-title">Gameplay introduction:</div>
 		<div class="game-info-text">
@@ -9,14 +16,14 @@
 		</div>
 		<div class="game-info-title">How to play 1 introduction:</div>
 		<div class="game-info-text">
-			<p>Minimum bet amount: <span>1000TSB</span>, enter the amount to bet positive and negative</p>
+			<p>Minimum bet amount: <span>100K</span>, enter the amount to bet positive and negative</p>
 <p class="game-info-title-small">Profit rules:</p>
 <p class="game-info-text-samll">The total amount of the winner is greater than the total amount of the loser, and the winner will distribute the profit according to the proportion of the individual bet amount to the total bet amount of the winner</p>
 <p class="game-info-text-samll">If the total amount of the winner is equal to or less than the total amount of the loser, the winner will get a profit of 1:1, and the extra bet amount of the loser will be refunded according to the proportion.</p>
 		</div>
 		<div class="game-info-title">How to play 2 introduction:</div>
 		<div class="game-info-text">
-			<p>The minimum amount to grab bankroll: <span>1000000TSB</span>,</p>
+			<p>The minimum amount to grab bankroll: <span>5M</span>,</p>
 <p>Any player can grab the dealer, the dealer with the largest amount</p>
 <p>The dealer can set the odds on both sides, the lowest odds are 1:1</p>
 <p>When the difference between the positive amount and the negative amount is greater than or equal to the dealer pledge amount, the player can only bet on the party with the smaller amount</p>
@@ -24,12 +31,37 @@
 <p class="game-info-text-samll">Pay out according to the odds set by the dealer</p>
 		</div>
 	</div>
+    </div>
 </template>
 
 <script>
+	export default {
+		data() {
+			return {
+				myAddress: undefined,
+			}
+		},
+		methods: {
+
+			// 连接钱包
+			linkPay() {
+				this.$contract.initWeb3();
+			},
+		}
+	}
 </script>
 
 <style  scoped>
+	.wallte {
+		text-align: center;
+	}
+	
+	.wallte .wallte-link {
+		display: inline-block;
+		font-size: 14px;
+		color: #db137a;
+		padding: 30px 0px 20px 0px;
+	}
 	.gameinfo-main{width: 94%;margin: 50px auto;border: 1px solid #fff;padding:60px 80px;box-sizing: border-box;border-radius: 10px;max-width: 1200px;color: #fff;font-size: 14px;line-height: 32px;}
 	.game-info-title{color: #84c225;font-size: 18px;margin-bottom: 10px;}
 	.game-info-title-small{font-size: 16px;}

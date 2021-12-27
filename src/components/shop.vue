@@ -1,50 +1,74 @@
 <template>
   <div>
-    <div class="shop">
-      <div class="shop-top">
-        <div @click="model=0" :class="model == 0 ? 'click modeChange' : 'modeChange'">Buy</div>
-        <div @click="model=1" :class="model == 1 ? 'click modeChange' : 'modeChange'">Sell</div>
-      </div>
-      <div v-if="model == 0">
-        <div class="need clearfix">
-        	<span class="left">
-          Cost :
-          </span>
-          <span class="right">USDT</span>
-          <div class="need-main">
-          <input type="text" @input="calcBuy" v-model="buy"/>
-          </div>
-          
-        </div> 
-        <div class="get clearfix">
-        	<span class="left">
-         Get :
-         </span>
-          <div class="need-main">
-         {{ buyGet }} TSB
-         </div>
-        </div>
-        <div class="appove" v-if="AllowanceBuy != 0 && AllowanceBuyBool" @click="buyFn">Buy</div>
-        <div class="swap" v-else @click="appoveBuy">Empower</div>
-      </div>
-      <div v-else>
-        <div class="need clearfix">
-        	<span class="left">
-         Cost :
-         </span>
-          <span class="right">TSB</span>
-          <div class="need-main">
-          <input type="text" @input="calcSell" v-model="sell"/>
-          </div>
-        </div> 
-        <div class="get">
-          Get : {{ sellGet }} USDT
-        </div>
-        <div class="appove" v-if="AllowanceSell != 0 && AllowanceSellBool" @click="sellFn">Sell</div>
-        <div class="swap" v-else @click="appoveSell">Empower</div>
-      </div>
-    </div>
-    
+    <div class="guess-game">
+			Guess<img src="../assets/zheng.png" />Bitcoin Game
+	</div>
+	<div class="wallte">
+		<div class="wallte-link" v-if="myAddress == undefined" @click="linkPay">
+			wallet address
+			</div>
+			<div class="wallte-link" v-else>{{ myAddress }}</div>
+		</div>
+	<div class="shopping">
+		Shoppingmall
+	</div>
+	<div class="shop-main">
+		<div class="usdt">
+			USTD ExchangeTSB&nbsp;&nbsp;&nbsp;1  ：1000
+		</div>
+		<div class="shop-group clearfix">
+			<span class="left">
+				Cost：
+			</span>
+			<span class="right">
+				USDT
+			</span>
+			<div class="shop-group-main">
+				<input type="text"  @input="calcBuy" v-model="buy"/>
+			</div>
+		</div>
+		<div class="shop-group clearfix">
+			<span class="left color-green">
+				Get：{{buyGet}} TSB
+			</span>
+			<div class="right shop-group-button" v-if="AllowanceBuy != 0" @click="buyFn">
+				Exchange
+			</div>
+			<div class="right shop-group-button" v-else @click="appoveBuy">
+				Empower
+			</div>
+		</div>
+		<div class="shop-group clearfix">
+			<span class="left colir-red">
+				Owned TSB：{{totalReward}} TSB
+			</span>
+			<div class="right shop-group-button btn-blue" @click="GetRewardFn">
+				Withdraw Cash
+			</div>
+		</div>
+		<div class="shop-group clearfix">
+			<span class="left">
+				Cost：
+			</span>
+			<span class="right">
+				TSB
+			</span>
+			<div class="shop-group-main">
+				<input type="text" @input="calcSell" v-model="sell"/>
+			</div>
+		</div>
+		<div class="shop-group clearfix">
+			<span class="left color-green">
+				Get：{{ sellGet }} USDT
+			</span>
+			<div class="right shop-group-button btn-blue" v-if="AllowanceSell != 0" @click="sellFn">
+				Withdraw Cash
+			</div>
+			<div class="right shop-group-button btn-blue" v-else @click="appoveSell">
+				Empower
+			</div>
+		</div>
+	</div>
     <div v-show="curtain" class="curtain"></div>
   </div>
 </template>
@@ -57,6 +81,7 @@ import { NumSplic } from "../unit/tool";
 export default {
   data() {
     return {
+	  myAddress: undefined,
       curtain: false,
       model: 0,
       buy: null,
@@ -68,15 +93,35 @@ export default {
       AllowanceSell: 0,
       AllowanceSellBool : true,
 
+
+      // 可领取奖励
+      totalReward: 0,
     };
   },
   methods: {
+	// 连接钱包
+	linkPay() {
+		this.$contract.initWeb3();
+	},
+	// 加载钱包
+	loadingData() {
+		this.$contract.connectWallet().finally(() => {
+			let address = this.$contract.getCurrWalletAddress();
+			this.create();
+			if(address != undefined) {
+				this.myAddress = address.substr(0, 4) + "..." + address.substr(38, 4);
+			} else {
+				this.myAddress = address;
+			}
+			this.myAddressAll = address
+		});
+	},
     calcBuy(e) {
-      if (e.target.value >= 0) {
+      if (e.target.value > 0) {
         var re = /([0-9]+\.[0-9]{18})[0-9]*/;
         this.buy = e.target.value.replace(re, "$1");
       } else {
-        this.buy = null;
+        this.buy = 0;
       }
       this.AllowanceBuyBool = !big(this.AllowanceBuy).lt(
         big(this.buy)
@@ -84,11 +129,11 @@ export default {
       this.buyGet = big(this.buy).times(1000)
     },
     calcSell(e){
-      if (e.target.value >= 0) {
+      if (e.target.value > 0) {
         var re = /([0-9]+\.[0-9]{18})[0-9]*/;
         this.sell = e.target.value.replace(re, "$1");
       } else {
-        this.sell = null;
+        this.sell = 0;
       }
       this.AllowanceSellBool = !big(this.AllowanceSell).lt(
         big(this.sell)
@@ -115,6 +160,26 @@ export default {
         this.curtain = false;
       }).catch(error => {
         this.$message.error('兑换失败');
+        this.curtain = false;
+      })
+    },
+    GetRewardFn(){ 
+      if(this.totalReward == 0){ 
+        this.$message({
+          message: '暂无领取',
+          type: 'warning'
+        });
+        return 
+      }
+      this.curtain = true;
+      this.$contract.routerGetReward().then(data=>{  
+        this.$message({
+          message: '领取成功',
+          type: 'success'
+        });
+        this.curtain = false;
+      }).catch(error => {
+        this.$message.error('领取失败');
         this.curtain = false;
       })
     },
@@ -170,6 +235,16 @@ export default {
             ) - 0;
         });
     },
+    routerViewCalcFn() { 
+      this.$contract
+        .routerViewCalc()
+        .then((data) => {
+          this.totalReward = 
+              big(data)
+                .div(10 ** 18)
+                .toString() 
+        });
+    },
     // 授权USDT
     appoveBuy (){
       this.curtain = true;
@@ -198,20 +273,15 @@ export default {
         this.curtain = false;
       })
     },
-    // 加载钱包
-    loadingData() {
-      this.$contract.connectWallet().finally(() => {
-        let address = this.$contract.getCurrWalletAddress();
-        this.create();
-      });
-    },
     create() {
       this.queryAllowance()
+      this.routerViewCalcFn()
       clearInterval(this.fnShop);
       this.fnShop = setInterval(this.whileFN, 3000);
     },
     whileFN() {
       this.queryAllowance();
+      this.routerViewCalcFn()
     },
   },
   mounted() { 
@@ -227,6 +297,67 @@ export default {
 </script>
 
 <style scoped>
+
+.curtain {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.55);
+  z-index: 1000;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+	.color-green{color: #84c225!important;}
+	.colir-red{color: #da251d!important;}
+	.btn-blue{background: #0093dd!important;}
+	.wallte {
+		text-align: center;
+	}
+	
+	.wallte .wallte-link {
+		display: inline-block;
+		font-size: 14px;
+		color: #db137a;
+		padding: 10px 0px 0px 0px;
+	}
+	.shop-group-button{display: inline-block;line-height: 38px;color: #fff;font-size: 14px;padding: 0 6px;background: #eb3d00;cursor: pointer;}
+	.usdt{color: #eb3d00;font-size: 14px;margin-bottom: 20px;}
+	.shop-main{border: 1px solid #fff;border-radius: 5px;padding: 15px;box-sizing: border-box;width: 500px;margin: 0 auto;margin-bottom: 220px;}
+	.shopping{font-size: 18px;color: #6ac334;text-align: center;margin: 14px 0px;}
+.guess-game {
+		text-align: center;
+		font-size: 22px;
+		color: #fff;
+		margin-top: 20px;
+	}
+	input:focus{outline: none;}
+	.shop-group{margin-bottom: 20px;}
+	.shop-group-main{margin-left: 45px;margin-right: 45px;}
+	.shop-group span{font-size: 14px;color: #fff;line-height: 38px;}
+	.shop-group-main input {
+		-webkit-appearance: none;
+		color: #333;
+		height: 38px!important;
+		border-radius: 0;
+		width: 100%;
+		background: #fff;
+		border: none;
+		font-size: 14px;
+		line-height: 38px;
+		box-sizing: border-box;
+		padding: 0 10px;
+	}
+	.guess-game img {
+		width: 20px;
+		vertical-align: middle;
+		margin: 0 5px;
+	}
+	@media (max-width:767px) {
+		.shop-main{width: 94%;}
+		.shop-group-main input{height: 40px!important;line-height: 40px;}
+		.shop-group span{line-height:  40px;}
+		.shop-group-button{line-height: 40px;}
+	}
 	.clearfix:after {
 		visibility: hidden;
 		display: block;
@@ -258,85 +389,5 @@ export default {
 	.right {
 		float: right;
 	}
-.curtain {
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.55);
-  z-index: 1000;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-input {
-  outline: none;
-}
-.shop {
-  width: 400px;
-  height: 300px;
-  border: 1px solid #fff;
-  margin: auto;
-  margin-top: 150px;
-  border-radius: 10px;
-  padding: 50px 100px;
-  color: #fff;
-}
-.shop-top{text-align: center;}
-.modeChange {
-  text-align: center;
-		display: inline-block;
-		padding: 6px 20px;
-		color: #fff;
-		font-weight: 500;
-		display: inline-block;
-		background-color: #bcd93d;
-		font-size: 12px;
-		cursor: pointer;
-}
-.click {
-  background-color: #84c225;
-		font-size: 14px;
-		padding: 8px 30px;
-}
 
-.need {
-  margin-top: 50px;
-}
-.get {
-  margin-top: 20px
-}
-
-.appove {
-  width: 100px;
-  height: 50px;
-  line-height: 50px;
-  text-align: center; 
-  background-color: #70869c;
-  color: #fff;
-  margin: auto;
-  margin-top: 80px;
-  border-radius: 20px;
-}
-.swap {
-  width: 100px;
-  line-height: 40px;
-  text-align: center;
-  background-color: #e77817;
-  color: #fff;
-  margin: auto;
-  margin-top: 80px;
-  border-radius: 0px;
-  cursor: pointer;
-}
-.need-main{margin-left: 70px;margin-right: 70px;}
-.need-main input{height: 30px;line-height: 30px;width: 100%;-webkit-appearance: none;border-radius: 0;}
-.need span{line-height: 30px;}
-@media (min-width:1080px) {
-	.modeChange:hover,.swap:hover{opacity: 0.8;}
-}
-@media (max-width:767px) {
-	.shop{width: 94%;box-sizing: border-box;padding:50px 10px;margin: 10px auto 30px auto;height: auto;}
-	.swap{margin-top: 40px;}
-	.need span{font-size: 14px;}
-	.need-main{margin-left: 50px;margin-right: 50px;}
-}
 </style>

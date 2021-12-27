@@ -1,5 +1,11 @@
 <template>
   <div class="history">
+  	<div class="wallte">
+				<div class="wallte-link" v-if="myAddress == undefined" @click="linkPay">
+					wallet address
+				</div>
+				<div class="wallte-link" v-else>{{ myAddress }}</div>
+			</div>
     <div class="shop-top">
       <div @click="model=0" :class="model == 0 ? 'click modeChange' : 'modeChange'">PLAY1</div>
       <div @click="model=1" :class="model == 1 ? 'click modeChange' : 'modeChange'">PLAY2</div>
@@ -41,7 +47,7 @@
             <span style="margin-left: 10px">{{ scope.row.number }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="PositiveBet" align="center">
+        <el-table-column label="Pledge direction" align="center">
           <template slot-scope="scope">
             <span style="margin-left: 10px" v-show="scope.row.buy == 0 ">Positive</span>
             <span style="margin-left: 10px" v-show="scope.row.buy == 1 ">Negative</span>
@@ -76,6 +82,7 @@ import { NumSplic } from "../unit/tool";
 export default {
   data() {
     return {
+    	myAddress: undefined,
       model: 0,
       model1: [
         // {
@@ -111,6 +118,10 @@ export default {
   },
 
   methods: {
+  	// 连接钱包
+			linkPay() {
+				this.$contract.initWeb3();
+			},
     model1Change(e) {
       this.freeViewMyHistoryFn(e);
     },
@@ -230,6 +241,16 @@ export default {
 </script>
 
 <style scoped>
+	.wallte {
+		text-align: center;
+	}
+	
+	.wallte .wallte-link {
+		display: inline-block;
+		font-size: 14px;
+		color: #db137a;
+		padding: 30px 0px 20px 0px;
+	}
 .shop-top{text-align: center;}
 .modeChange {
   text-align: center;

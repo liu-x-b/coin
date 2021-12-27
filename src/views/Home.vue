@@ -10,9 +10,9 @@
 					<el-dropdown-menu slot="dropdown">
 						<el-dropdown-item @click.native="to('/')">Home</el-dropdown-item>
 						<el-dropdown-item @click.native="to('/shop')">ShoppingMall</el-dropdown-item>
-						<el-dropdown-item @click.native="to('/withdraw')">Draw Money</el-dropdown-item>
+						<!--<el-dropdown-item @click.native="to('/withdraw')">Draw Money</el-dropdown-item>-->
 						<el-dropdown-item @click.native="to('/history')">FundRecord</el-dropdown-item>
-						<el-dropdown-item>Share</el-dropdown-item>
+						<!--<el-dropdown-item>Share</el-dropdown-item>-->
 						<el-dropdown-item @click.native="to('/gameInfo')">GamePlay</el-dropdown-item>
 					</el-dropdown-menu>
 				</el-dropdown>
@@ -31,12 +31,7 @@
 				
 			</div>
 			<div class="main-bottom">
-			<div class="wallte">
-				<div class="wallte-link" v-if="myAddress == undefined" @click="linkPay">
-					wallet address
-				</div>
-				<div class="wallte-link" v-else>{{ myAddress }}</div>
-			</div>
+			
       
 			<router-view></router-view>
 			</div>
@@ -56,16 +51,14 @@
 				curtain: false,
 				// 菜单
 				menu: false,
+				
 				myAddress: undefined,
 				// 模式切换
 				mode: 0,
 			};
 		},
 		methods: {
-			// 连接钱包
-			linkPay() {
-				this.$contract.initWeb3();
-			},
+			
 			// 加载钱包
 			loadingData() {
 				this.$contract.connectWallet().finally(() => {
@@ -100,7 +93,7 @@
 .footer{color: #fff;text-align: center;padding: 10px 5px;font-size: 12px;}
 .el-dropdown-link{display: inline-block;border: 1px solid #fff;border-radius: 3px;padding: 3px 8px;line-height: 20px;}
 .el-dropdown-link img{width: 20px;display: inline-block;vertical-align: middle;}
-  .bodys{background: #383431;}
+  .bodys{background: #000;}
 	.mains {
 		margin-top: 46px;
 		min-height: 850px;
@@ -139,9 +132,9 @@
 	}
 	
 	.menu {
-		background-color: #383431;
+		background-color: #000;
 		line-height: 30px;
-		padding: 8px 10px;
+		padding: 8px 10%;
 		width: 100%;
 		position: fixed;
 		left: 0;
@@ -199,5 +192,6 @@
 	}
 	@media (max-width:767px) {
 		.mains{min-height: 500px;}
+		.menu{padding: 8px 10px;}
 	}
 </style>
