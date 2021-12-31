@@ -21,8 +21,14 @@
 			<div class="view">
 				<img :src="model1Img" v-if="model1Time == 0" alt="">
 				<img :src="ImgDong" v-else alt="">
-				<p>{{ model1Time }}</p>
-				<div @click="Model1Lottery">Lottery Countdown</div>
+				<p v-if="model1Time != 0">{{ model1Time }}</p>
+				<p v-else></p>
+				<div v-if="model1Time != 0" >Bet Countdown</div>
+				<div v-else-if="Model1ViewGame.time ==0" >Lottery Over Start Betting 
+				</div>
+				<div v-else >
+					in The Lottery 
+				</div>
 			</div>
 			<div class="game-main">
 				<div class="progress-group">
@@ -30,22 +36,38 @@
 						<span class="left progress-name">
             		Positive Bet
             	</span>
-            	<span class="right progress-number">
-            		{{Model1ViewGame.TotalMoney >0? Model1ViewGame.frontMoney / Model1ViewGame.TotalMoney * 100+'%': 0+'%' }}
+            	<span class="right progress-number" style="marginRight:-15px">
+            		{{Model1ViewGame.TotalMoney >0? (Model1ViewGame.frontMoney / Model1ViewGame.TotalMoney * 100).toFixed(2)+'%': 0+'%' }}
             	</span>
 						<div class="progress-right">
 							<div class="progress-right-main" v-if="Model1ViewGame.TotalMoney >0">
-								<span>{{Model1ViewGame.frontMoney}}</span>
+								<span>{{scale(Model1ViewGame.frontMoney)}}</span>
 								<div class="progress-right-mains" :style="'width:'+Model1ViewGame.frontMoney / Model1ViewGame.TotalMoney * 100+'%'"></div>
 							</div>
 							<div class="progress-right-main" v-else>
-								<span>{{Model1ViewGame.frontMoney}}</span>
+								<span>{{scale(Model1ViewGame.frontMoney)}}</span>
 								<div class="progress-right-mains" style="width:0%"></div>
 							</div>
 						</div>
 					</div>
 					<div class="pledgable">
-						Pledgable Amount：{{Number(myBalance) + Number(totalReward)}}
+						Pledgable Amount：{{scale(Number(myBalance) + Number(totalReward))}}
+					</div>
+					
+					<div class="scales color-red">
+						Odds&nbsp;&nbsp;
+						<span class="color-red" v-if="Model1ViewGame.contraryMoney != 0 && Model1ViewGame.frontMoney != 0">
+							{{(Number(Model1ViewGame.contraryMoney) / Number(Model1ViewGame.frontMoney)).toFixed(2)}}
+						</span>
+						<span class="color-red" v-else-if="Model1ViewGame.contraryMoney == 0 && Model1ViewGame.frontMoney != 0">
+							{{((Number(Model1ViewGame.contraryMoney)+1) / Number(Model1ViewGame.frontMoney)).toFixed(2)}}
+						</span>
+						<span class="color-red" v-else-if="Model1ViewGame.contraryMoney != 0 && Model1ViewGame.frontMoney == 0">
+							{{(Number(Model1ViewGame.contraryMoney) / Number((Model1ViewGame.frontMoney)+1)).toFixed(2)}}
+						</span>
+						<span class="color-red" v-else>
+							{{(Number((Model1ViewGame.contraryMoney) +1) / Number((Model1ViewGame.frontMoney)+1)).toFixed(2)}}
+						</span>
 					</div>
 					<div class="pledgable colorwhite" 
             		v-if="
@@ -53,10 +75,11 @@
             		  Model1User.random == 0 &&
             		  Model1User.userIndex == Model1HeightPeriods
             		">
-						Pledged：{{Model1User.amount}}
+						Pledged：{{scale(Model1User.amount)}}
 					</div>
+					
 					<div class="pledgable colorwhite" v-else>
-						Pledged： 0.0000 TSB
+						Pledged： 0 K TSB
 					</div>
 					<div class="positive-input clearfix">
 						<div class="right positive-bet" 
@@ -70,12 +93,14 @@
 						 
 						<div class="positive-input-main">
 							<input type="text" 
+							disabled="disabled"
           					@input="Model1FrontAmountFn"
-          					v-model="Model1FrontAmount"
-          					placeholder="请输入质押金额"/>
+          					placeholder="Please enter the amount pledged"
+							:value="scale(Model1FrontAmount)"  
+							  />
 						</div>
 						<div class="positive-button">
-							<div class="positive-buttons" @click="Model1FrontAmount = 100000">Min</div>
+							<div class="positive-buttons" @click="Model1FrontAmount = 50000">Min</div>
 							<div class="positive-buttons" @click="Model1FrontAmount = Model1FrontAmount * 1.5">1.5x</div>
 							<div class="positive-buttons" @click="Model1FrontAmount = Model1FrontAmount * 2">2x</div>
 							<div class="positive-buttons" @click="Model1FrontAmount = Model1FrontAmount * 5">5x</div>
@@ -87,22 +112,37 @@
 						<span class="left progress-name">
             		Negative Bet
             	</span>
-            	<span class="right progress-number">
-            		{{Model1ViewGame.TotalMoney > 0 ? Model1ViewGame.contraryMoney / Model1ViewGame.TotalMoney * 100 +"%" : 0 + "%"}}
+            	<span class="right progress-number" style="marginRight:-15px">
+            		{{Model1ViewGame.TotalMoney > 0 ? (Model1ViewGame.contraryMoney / Model1ViewGame.TotalMoney * 100).toFixed(2) +"%" : 0 + "%"}}
             	</span>
 						<div class="progress-right">
 							<div class="progress-right-main" v-if="Model1ViewGame.TotalMoney >0">
-								<span>{{Model1ViewGame.contraryMoney}}</span>
+								<span>{{scale(Model1ViewGame.contraryMoney)}}</span>
 								<div class="progress-right-mains" :style="'width:'+Model1ViewGame.contraryMoney / Model1ViewGame.TotalMoney * 100 +'%'"></div>
 							</div>
 							<div class="progress-right-main" v-else>
-								<span>{{Model1ViewGame.contraryMoney}}</span>
+								<span>{{scale(Model1ViewGame.contraryMoney)}}</span>
 								<div class="progress-right-mains" style="width:0%"></div>
 							</div>
 						</div>
 					</div>
 					<div class="pledgable">
-						Pledgable Amount：{{Number(myBalance) + Number(totalReward)}}
+						Pledgable Amount：{{scale(Number(myBalance) + Number(totalReward))}}
+					</div>
+					<div class="scales color-red">
+						Odds&nbsp;&nbsp;
+						<span class="color-red" v-if="Model1ViewGame.frontMoney != 0 && Model1ViewGame.contraryMoney != 0">
+							{{(Number(Model1ViewGame.frontMoney) / Number(Model1ViewGame.contraryMoney)).toFixed(2)}}
+						</span>
+						<span class="color-red" v-else-if="Model1ViewGame.frontMoney == 0 && Model1ViewGame.contraryMoney != 0">
+							{{((Number(Model1ViewGame.frontMoney)+1) / Number(Model1ViewGame.contraryMoney)).toFixed(2)}}
+						</span>
+						<span class="color-red" v-else-if="Model1ViewGame.frontMoney != 0 && Model1ViewGame.contraryMoney == 0">
+							{{(Number(Model1ViewGame.frontMoney) / Number((Model1ViewGame.contraryMoney)+1)).toFixed(2)}}
+						</span>
+						<span class="color-red" v-else>
+							{{(Number((Model1ViewGame.frontMoney) +1) / Number((Model1ViewGame.contraryMoney)+1)).toFixed(2)}}
+						</span>
 					</div>
 					<div class="pledgable colorwhite" 
             			v-if="
@@ -110,11 +150,11 @@
             			  Model1User.random == 1 &&
             			  Model1User.userIndex == Model1HeightPeriods
             			">
-						Pledged：{{ Model1User.amount }}TSB
+						Pledged：{{ scale(Model1User.amount) }}TSB
 					</div>
 					<div class="pledgable colorwhite" 
             			v-else>
-						Pledged： 0.0000 TSB
+						Pledged： 0 K TSB
 					</div>
 					<div class="positive-input clearfix">
 						<div class="right positive-bet" 
@@ -128,12 +168,14 @@
 						 
 						<div class="positive-input-main">
 							<input type="text" 
-         					@input="Model1BackAmountFn"
-         					v-model="Model1BackAmount"
-         					placeholder="请输入质押金额"/>
+         					@input="Model1BackAmountFn" 
+         					placeholder="Please enter the amount pledged"
+							:value="scale(Model1BackAmount)"
+							disabled="disabled"
+							/>
 						</div>
 						<div class="positive-button">
-							<div class="positive-buttons" @click="Model1BackAmount = 100000">Min</div>
+							<div class="positive-buttons" @click="Model1BackAmount = 50000">Min</div>
 							<div class="positive-buttons" @click="Model1BackAmount = Model1BackAmount * 1.5">1.5x</div>
 							<div class="positive-buttons" @click="Model1BackAmount = Model1BackAmount * 2">2x</div>
 							<div class="positive-buttons" @click="Model1BackAmount = Model1BackAmount * 5">5x</div>
@@ -215,25 +257,36 @@
 			</div>
 		</div>
 		<div class="big" v-show="mode == 1">
-			<div class="view" v-if="Model2Banker.time == 0 || Number(Model2Banker.time)+30 > newTime">
+			<div class="view" v-if="Model2Banker.time == 0 || Number(Model2Banker.time)+30 > newTime2">
 				<img :src="model2Img" alt="">
-				<p>{{ Number(Model2Banker.time)+30 - Number(newTime) >0?Number(Model2Banker.time)+30 - Number(newTime):0 }}</p>
-				<div>Rob banker</div>
+				<p>{{ Number(Model2Banker.time)+30 - Number(newTime2) >0?Number(Model2Banker.time)+30 - Number(newTime2):0 }}</p>
+				<div>Grab Dealer Countdown</div>
 			</div>
 			<div class="view" v-else>
 				<img :src="model2Img" alt="" v-if="model2Time == 0">
 				<img :src="ImgDong" alt="" v-else>
-				<p>{{ model2Time }}</p>
-				<div @click="Model2Lottery">Grab dealer Countdown</div>
+
+				
+				<p v-if="model2Time != 0">{{ model2Time }}</p>
+				<p v-else></p>
+				<div v-if="model2Time != 0" >Bet Countdown</div>
+				<div v-else-if="Model2ViewGame.time ==0" >Lottery Over Start Betting 
+				</div>
+				<div v-else >
+					in The Lottery 
+				</div>
 			</div>
 			<div class="game-main">
 				<div class="dealers clearfix">
-					<div class="right dealersbutton" @click="bankerQuitFn">
+					<div class="right dealersbutton" @click="bankerQuitFn" v-if="Model2Banker.time == 0 || Number(Model2Banker.time)+30 > newTime2">
+						Quit Dealer
+					</div>
+					<div class="right dealersbutton" style="background:#ccc" v-else>
 						Quit Dealer
 					</div>
 					<div class="dealers-main">
 						Current Dealer：{{ Model2Banker.bankerAddress }}
-						<p>Dealer Pool：{{ Model2Banker.bankerMoney }}</p>
+						<p>Dealer Pool：{{ scale(Model2Banker.bankerMoney) }}</p>
 					</div>
 				</div>
 				<div class="game-form">
@@ -242,7 +295,7 @@
 							Positive Odds:
 						</div>
 						<div class="game-input-right">
-							<input type="text" @input="Model2FrontRatioFn" v-model="Model2FrontRatio" />
+							<input type="text" @input="Model2FrontRatioFn" v-model="Model2FrontRatio" disabled="disabled"/>
 							<a class="addnumber">
 								<img src="../assets/shang.svg" @click="addZeroOne(true)"/>
 							</a>
@@ -256,7 +309,7 @@
 							Negative Odds:
 						</div>
 						<div class="game-input-right">
-							<input type="text" @input="Model2BackRatioFn" v-model="Model2BackRatio"/>
+							<input type="text" @input="Model2BackRatioFn" v-model="Model2BackRatio" disabled="disabled"/>
 							<a class="addnumber">
 								<img src="../assets/shang.svg" @click="addZeroOne(false)"/>
 							</a>
@@ -270,7 +323,7 @@
 							Dealer Cost:
 						</div>
 						<div class="game-input-right">
-							<input type="text" @input="Model2BankerAmountFn" v-model="Model2BankerAmount"  />
+							<input type="text" @input="Model2BankerAmountFn" disabled="disabled" :value="scale(Model2BankerAmount)"/>
 						</div>
 					</div>
 					<div class="positive-button">
@@ -278,8 +331,13 @@
 						<div class="positive-buttons" @click="Model2BankerAmount = Model2BankerAmount*1.5">1.5x</div>
 						<div class="positive-buttons" @click="Model2BankerAmount = Model2BankerAmount*2">2x</div>
 						<div class="positive-buttons" @click="Model2BankerAmount = Model2BankerAmount*5">5x</div>
-					<div class="grab-button" @click="bankerChangeRatioFn" v-show="this.Model2Banker[0] == this.myAddressAll">Change Ratio</div>				
-					<div class="grab-button" v-show="AllowanceModel2 != 0 && this.Model2Banker[0] != this.myAddressAll" @click="giveBanker">GRABDEALER</div>
+
+					<div class="grab-button" @click="bankerChangeRatioFn" v-show="this.Model2Banker[0] == this.myAddressAll" v-if="Model2Banker.time == 0 || Number(Model2Banker.time)+30 > newTime2">Change Ratio</div>				
+					<div class="grab-button" style="background:#ccc" v-show="this.Model2Banker[0] == this.myAddressAll" v-else>Change Ratio</div>				
+
+					<div class="grab-button" v-show="AllowanceModel2 != 0 && this.Model2Banker[0] != this.myAddressAll" @click="giveBanker" v-if="Model2Banker.time == 0 || Number(Model2Banker.time)+30 > newTime2">GRABDEALER</div>
+					<div class="grab-button" style="background:#ccc" v-show="AllowanceModel2 != 0 && this.Model2Banker[0] != this.myAddressAll" v-else>GRABDEALER</div>
+
 					<div class="grab-button" v-show="AllowanceModel2 == 0 && this.Model2Banker[0] != this.myAddressAll" @click="model2ApproveFn">Empower</div>
 					</div>
 				</div>
@@ -288,8 +346,8 @@
 						<span class="left progress-name">
             		Positive Bet
             	</span>
-						<span class="right progress-number">
-            		{{Model2FrontMaxratio}}%
+				<span class="right progress-number" style="marginRight:-15px">
+            		{{(Model2FrontMaxratio).toFixed(2)}}%
             	</span>
                         <div class="progress-right">
 							<div class="progress-right-main">
@@ -297,8 +355,8 @@
               						Model2User.start &&
               						Model2User.random == 0 &&
               						Model2User.userIndex == Model2HeightPeriods"
-								>{{Model2User.amount}} TSB</span>
-								<span v-else>0.0000 TSB</span>
+								>{{scale(Model2User.amount)}} TSB</span>
+								<span v-else>0 K TSB</span>
 								<div class="progress-right-mains" :style="'width:'+Model2FrontMaxratio+'%'"></div>
 							</div>
 						</div>
@@ -309,10 +367,10 @@
 						</span>
 					</div>
 					<div class="pledgable color-green" v-if="Number(myBalance) +Number(totalReward) > Number(bankerFrontMax) - Number(Model2ViewGame.frontMoney)">
-						Pledgable Amount：{{Number(bankerFrontMax) - Number(Model2ViewGame.frontMoney)}}
+						Pledgable Amount：{{scale(Number(bankerFrontMax) - Number(Model2ViewGame.frontMoney))}}
 					</div>
 					<div class="pledgable color-green" v-else>
-						Pledgable Amount：{{Number(myBalance) +Number(totalReward)}}
+						Pledgable Amount：{{scale(Number(myBalance) +Number(totalReward))}}
 					</div>
 					<div class="pledgable colorwhite" 
 							v-if=" 
@@ -320,10 +378,10 @@
             				Model2User.random == 0 &&
       						Model2User.userIndex == Model2HeightPeriods"
 						 >
-						Pledged：{{Model2User.amount}} TSB
+						Pledged：{{scale(Model2User.amount)}} TSB
 					</div>
 					<div class="pledgable colorwhite" v-else>
-						Pledged：0.0000 TSB
+						Pledged：0 K TSB
 					</div>
 					<div class="positive-input clearfix"> 
 						<div class="right positive-bet" v-if="AllowanceModel2 != 0" @click="Model2Play(true)">
@@ -331,7 +389,7 @@
 						</div>
 						<div class="right positive-bet" v-else @click="model2ApproveFn">EMPOWER</div>
 						<div class="positive-input-main">
-							<input type="text"  @input="Model2FrontAmountFn" v-model="Model2FrontAmount" />
+							<input type="text"  @input="Model2FrontAmountFn" disabled="disabled" :value="scale(Model2FrontAmount)"/>
 						</div>
 						<div class="positive-button">
 							<div class="positive-buttons" @click="Model2FrontAmount = 50000">Min</div>
@@ -346,8 +404,8 @@
 						<span class="left progress-name">
             		Negative Bet
             	</span>
-            	<span class="right progress-number">
-            		{{Model2ContraryMaxratio}}%
+            	<span class="right progress-number" style="marginRight:-15px">
+            		{{(Model2ContraryMaxratio).toFixed(2)}}%
             	</span>
 						<div class="progress-right">
 							<div class="progress-right-main">								
@@ -355,8 +413,8 @@
               						Model2User.start &&
               						Model2User.random == 1 &&
               						Model2User.userIndex == Model2HeightPeriods"
-								>{{Model2User.amount}} TSB</span>
-								<span v-else>0.0000 TSB</span>
+								>{{scale(Model2User.amount)}} TSB</span>
+								<span v-else>0 K TSB</span>
 								<div class="progress-right-mains" :style="'width:'+ Model2ContraryMaxratio+'%'"></div>
 							</div>
 						</div>
@@ -365,10 +423,10 @@
 						Odds&nbsp;&nbsp;<span class="color-red">{{ Model2ViewGame.time != 0? Model2ViewGame.contraryRatio : Model2Banker.contraryRatio}}</span>
 					</div> 
 					<div class="pledgable color-green" v-if="Number(myBalance) +Number(totalReward) > Number(bankerContraryMax) - Number(Model2ViewGame.contraryMoney)">
-						Pledgable Amount：{{Number(bankerContraryMax) - Number(Model2ViewGame.contraryMoney)}}
+						Pledgable Amount：{{scale(Number(bankerContraryMax) - Number(Model2ViewGame.contraryMoney))}}
 					</div>
 					<div class="pledgable color-green" v-else>
-						Pledgable Amount：{{Number(myBalance) +Number(totalReward)}}
+						Pledgable Amount：{{scale(Number(myBalance) +Number(totalReward))}}
 					</div>
 					<div class="pledgable colorwhite"
 						v-if=" 
@@ -376,11 +434,11 @@
   						Model2User.random == 1 &&
             			Model2User.userIndex == Model2HeightPeriods"
 						>
-						Pledged：{{Model2User.amount}} TSB
+						Pledged：{{scale(Model2User.amount)}} TSB
 					</div>
 					<div class="pledgable colorwhite"
 						v-else>
-						Pledged：0.0000 TSB
+						Pledged：0 K TSB
 					</div>
 					<div class="positive-input clearfix">
 						<div class="right positive-bet" v-if="AllowanceModel2 != 0" @click="Model2Play(false)">
@@ -389,7 +447,7 @@
 						<div class="right positive-bet" v-else @click="model2ApproveFn">EMPOWER</div>
 						
 						<div class="positive-input-main">
-							<input type="text" @input="Model2BackAmountFn" v-model="Model2BackAmount" />
+							<input type="text" @input="Model2BackAmountFn" disabled="disabled" :value="scale(Model2BackAmount)"/>
 						</div>
 						<div class="positive-button">
 							<div class="positive-buttons" @click="Model2BackAmount = 50000">Min</div>
@@ -483,7 +541,7 @@
 
 	big.NE = -40
 	big.PE = 40
-	import { NumSplic } from "../unit/tool";
+	import { NumSplic , scale } from "../unit/tool";
 	export default {
 		data() {
 			return {
@@ -494,8 +552,10 @@
 				ImgDong: require('../assets/BTC.gif'),
 				model1Img: require('../assets/zheng.png'),
 				model2Img: require('../assets/zheng.png'),
-				newTime: 0,
-				newTimeTemp: 0,
+				newTime1: 0,
+				newTime1Temp: 0,
+				newTime2: 0,
+				newTime2Temp: 0,
 				model1Time: 0,
 				model2Time: 0,
 				// 遮罩
@@ -520,9 +580,9 @@
 				// 背面授权开关
 				AllowanceModel1BackBool: true,
 				// 正面输入质押量
-				Model1FrontAmount: 100000,
+				Model1FrontAmount: 50000,
 				// 背面输入质押量
-				Model1BackAmount: 100000,
+				Model1BackAmount: 50000,
 				// 当前最高期数
 				Model1HeightPeriods: 0,
 				// 当前最高期数信息
@@ -591,7 +651,9 @@
 
 		},
 		methods: {
-
+			scale(val) {
+				return scale(val)
+			},
 			// 连接钱包
 			linkPay() {
 				this.$contract.initWeb3();
@@ -660,13 +722,13 @@
 					.TokenApprove(this.$contract.getContractsAddress().free)
 					.then((data) => {
 						this.$message({
-							message: '授权成功',
+							message: 'Authorization success',
 							type: 'success'
 						});
 						this.curtain = false;
 					})
 					.catch((error) => {
-						this.$message.error('授权失败');
+						this.$message.error('Authorization failure');
 						this.curtain = false;
 					});
 			},
@@ -697,12 +759,12 @@
 			},
 			// model1质押
 			Model1Play(bool) {
-				if(Number(this.Model1ViewGame.time) + 150 > Number(this.newTime) || this.Model1ViewGame.time == 0) {
+				if(Number(this.Model1ViewGame.time) + 150 > Number(this.newTime1) || this.Model1ViewGame.time == 0) {
 
 				} else {
 					this.$message({
 						showClose: true,
-						message: '超出质押时间',
+						message: 'Exceed the pledge time',
 						type: 'warning'
 					});
 					return
@@ -714,14 +776,14 @@
 					if(this.Model1User.userIndex == this.Model1HeightPeriods && this.Model1User.start && this.Model1User.random == 1) {
 						this.$message({
 							showClose: true,
-							message: '不能质押自己对立面',
+							message: 'You cannot pledge your opposite',
 							type: 'warning'
 						});
 						return
 					}
-					if(this.Model1FrontAmount < 1000) {
+					if(this.Model1FrontAmount < 50000) {
 						this.$message({
-							message: "最小质押1000",
+							message: "Minimum pledge 50K",
 							type: "warning",
 						});
 						return;
@@ -732,14 +794,14 @@
 					if(this.Model1User.userIndex == this.Model1HeightPeriods && this.Model1User.start && this.Model1User.random == 0) {
 						this.$message({
 							showClose: true,
-							message: '不能质押自己对立面',
+							message: 'You cannot pledge your opposite',
 							type: 'warning'
 						});
 						return
 					}
-					if(this.Model1BackAmount < 1000) {
+					if(this.Model1BackAmount < 50000) {
 						this.$message({
-							message: "最小质押1000",
+							message: "Minimum pledge 50K",
 							type: "warning",
 						});
 						return;
@@ -749,14 +811,14 @@
 				this.curtain = true;
 				this.$contract.freePlay(bool, amount).then((data) => {
 					this.$message({
-						message: '质押成功',
+						message: 'The pledge success',
 						type: 'success'
 					});
 					this.curtain = false;
-					this.Model1FrontAmount = null
-					this.Model1BackAmount = null
+					this.Model1FrontAmount = 50000
+					this.Model1BackAmount = 50000
 				}).catch((error) => {
-					this.$message.error('质押失败');
+					this.$message.error('The pledge failure');
 					this.curtain = false;
 				});;
 			},
@@ -765,15 +827,15 @@
 				if(this.Model1ViewGame.frontMoney == 0 && this.Model1ViewGame.contraryMoney == 0) {
 					this.$message({
 						showClose: true,
-						message: '当期暂未开始',
+						message: 'The current period has not yet begun',
 						type: 'warning'
 					});
 					return
 				}
-				if(Number(this.Model1ViewGame.time) + 150 > Number(this.newTime)) {
+				if(Number(this.Model1ViewGame.time) + 150 > Number(this.newTime1)) {
 					this.$message({
 						showClose: true,
-						message: '开奖时间未到',
+						message: 'The drawing time is not here yet',
 						type: 'warning'
 					});
 					return
@@ -783,7 +845,7 @@
 					.freeLottery()
 					.then((data) => {
 						this.$message({
-							message: '开奖成功',
+							message: 'The lottery success',
 							type: 'success'
 						});
 						this.curtain = false;
@@ -802,7 +864,7 @@
 						})
 					})
 					.catch((error) => {
-						this.$message.error('开奖失败');
+						this.$message.error('The lottery failure');
 						this.curtain = false;
 					});
 			},
@@ -949,11 +1011,11 @@
  			// 减0.1
 			subZeroOne(bool) { 
 				if(bool) {
-					if(this.Model2FrontRatio > 0.1) {
+					if(this.Model2FrontRatio > 1) {
 						this.Model2FrontRatio = big(this.Model2FrontRatio).minus(0.1)
 					}
 				}else {
-					if(this.Model2BackRatio > 0.1) {
+					if(this.Model2BackRatio > 1) {
 						this.Model2BackRatio = big(this.Model2BackRatio).minus(0.1)
 					}
 					
@@ -967,13 +1029,13 @@
 					.TokenApprove(this.$contract.getContractsAddress().banker)
 					.then((data) => {
 						this.$message({
-							message: '授权成功',
+							message: 'Authorization success',
 							type: 'success'
 						});
 						this.curtain = false;
 					})
 					.catch((error) => {
-						this.$message.error('授权失败');
+						this.$message.error('Authorization failure');
 						this.curtain = false;
 					});
 			},
@@ -1009,12 +1071,12 @@
 			},
 			// model2质押
 			Model2Play(bool) {
-				if(Number(this.Model2ViewGame.time) + 150 > Number(this.newTime) || this.Model2ViewGame.time == 0) {
+				if(Number(this.Model2ViewGame.time) + 150 > Number(this.newTime2) || this.Model2ViewGame.time == 0) {
 
 				} else {
 					this.$message({
 						showClose: true,
-						message: '超出质押时间',
+						message: 'Exceed the pledge time',
 						type: 'warning'
 					});
 					return
@@ -1028,15 +1090,15 @@
 					if(this.Model2User.userIndex == this.Model2HeightPeriods && this.Model2User.start && this.Model2User.random == 1) {
 						this.$message({
 							showClose: true,
-							message: '不能质押自己对立面',
+							message: 'You cannot pledge your opposite',
 							type: 'warning'
 						});
 						return
 					}
 
-					if(this.Model2FrontAmount < 1000) {
+					if(this.Model2FrontAmount < 50000) {
 						this.$message({
-							message: "最小质押1000",
+							message: "Minimum pledge 50K",
 							type: "warning",
 						});
 						return;
@@ -1047,15 +1109,15 @@
 					if(this.Model2User.userIndex == this.Model2HeightPeriods && this.Model2User.start && this.Model2User.random == 0) {
 						this.$message({
 							showClose: true,
-							message: '不能质押自己对立面',
+							message: 'You cannot pledge your opposite',
 							type: 'warning'
 						});
 						return
 					}
 
-					if(this.Model2BackAmount < 1000) {
+					if(this.Model2BackAmount < 50000) {
 						this.$message({
-							message: "最小质押1000",
+							message: "Minimum pledge 50K",
 							type: "warning",
 						});
 						return;
@@ -1065,14 +1127,14 @@
 				this.curtain = true;
 				this.$contract.bankerPlay(bool, amount).then((data) => {
 					this.$message({
-						message: '质押成功',
+						message: 'The pledge success',
 						type: 'success'
 					});
 					this.curtain = false;
-					this.Model2FrontAmount = null
-					this.Model2BackAmount = null
+					this.Model2FrontAmount = 50000
+					this.Model2BackAmount = 50000
 				}).catch((error) => {
-					this.$message.error('质押失败');
+					this.$message.error('The pledge failure');
 					this.curtain = false;
 				});;
 			},
@@ -1081,15 +1143,15 @@
 				if(this.Model2ViewGame.frontMoney == 0 && this.Model2ViewGame.contraryMoney == 0) {
 					this.$message({
 						showClose: true,
-						message: '当期暂未开始',
+						message: 'The current period has not yet begun',
 						type: 'warning'
 					});
 					return
 				}
-				if(Number(this.Model2ViewGame.time) + 150 > Number(this.newTime)) {
+				if(Number(this.Model2ViewGame.time) + 150 > Number(this.newTime2)) {
 					this.$message({
 						showClose: true,
-						message: '开奖时间未到',
+						message: 'The drawing time is not here yet',
 						type: 'warning'
 					});
 					return
@@ -1099,7 +1161,7 @@
 					.bankerLottery()
 					.then((data) => {
 						this.$message({
-							message: '开奖成功',
+							message: 'The lottery success',
 							type: 'success'
 						});
 						this.curtain = false;
@@ -1121,7 +1183,7 @@
 						// },1500)
 					})
 					.catch((error) => {
-						this.$message.error('开奖失败');
+						this.$message.error('The lottery failure');
 						this.curtain = false;
 					});
 			},
@@ -1256,7 +1318,7 @@
 						1
 					);
 					if(obj.bankerAddress == "0x0000000000000000000000000000000000000000") {
-						obj.bankerAddress = "无"
+						obj.bankerAddress = "none"
 					} else {
 						obj.bankerAddress = data.bankerAddress.substr(0, 4) + "..." + data.bankerAddress.substr(38, 4);
 					}
@@ -1295,31 +1357,31 @@
 			},
 			// 抢庄
 			giveBanker() {
-				if(this.Model2FrontRatio <= 0) {
+				if(this.Model2FrontRatio <= 1) {
 					this.$message({
-						message: '请设置正面赔付率',
+						message: 'Please set the positive loss ratio, minimum 1',
 						type: 'warning'
 					});
 					return
 				}
-				if(this.Model2BackRatio <= 0) {
+				if(this.Model2BackRatio <= 1) {
 					this.$message({
-						message: '请设置反面赔付率',
+						message: 'Please set the negative loss ratio, the minimum is 1',
 						type: 'warning'
 					});
 					return
 				}
 
-				if(Number(this.Model2BankerAmount) < 1000000) {
+				if(Number(this.Model2BankerAmount) < 2000000) {
 					this.$message({
-						message: '请输入正确的质押量',
+						message: 'Please enter the correct amount of pledge, minimum 2M',
 						type: 'warning'
 					});
 					return
 				}
 				if(Number(this.Model2BankerAmount) < Number(this.Model2Banker.bankerMoney) + 200000) {
 					this.$message({
-						message: '请输入正确的质押量',
+						message: 'Please enter the correct amount of pledge',
 						type: 'warning'
 					});
 					return
@@ -1328,18 +1390,18 @@
 				this.curtain = true;
 				this.$contract.bankerRob(this.Model2BankerAmount, this.Model2FrontRatio, this.Model2BackRatio).then((data) => {
 					this.$message({
-						message: '抢庄成功',
+						message: 'Rob zhuang successful',
 						type: 'success'
 					});
 					this.curtain = false;
 				}).catch((error) => {
-					this.$message.error('抢庄失败');
+					this.$message.error('Rob zhuang failure');
 					this.curtain = false;
 				});
 			},
 			// model2查询可质押最大量
 			bankMaxDepositFn() {
-				if(this.Model2Banker.bankerAddress == "无") {
+				if(this.Model2Banker.bankerAddress == "none") {
 					this.Model2ContraryMaxratio = 0
 					this.Model2FrontMaxratio = 0
 					return
@@ -1374,7 +1436,7 @@
 			bankerQuitFn() {
 				if(this.Model2Banker[0] != this.myAddressAll) {
 					this.$message({
-						message: '当前庄家不是您',
+						message: 'The current dealer is not you',
 						type: 'warning'
 					});
 					return
@@ -1382,12 +1444,12 @@
 				this.curtain = true;
 				this.$contract.bankerQuit().then(data => {
 					this.$message({
-						message: '退庄成功',
+						message: 'Refund success zhuang',
 						type: 'success'
 					});
 					this.curtain = false;
 				}).catch((error) => {
-					this.$message.error('退庄失败');
+					this.$message.error('Zhuang failed back');
 					this.curtain = false;
 				});
 			},
@@ -1395,21 +1457,21 @@
 			bankerChangeRatioFn() {
 				if(this.Model2Banker[0] != this.myAddressAll) {
 					this.$message({
-						message: '当前庄家不是您',
+						message: 'The current dealer is not you',
 						type: 'warning'
 					});
 					return
 				}
 				if(this.Model2FrontRatio <= 0) {
 					this.$message({
-						message: '请设置正面赔付率',
+						message: 'Please set positive loss ratio',
 						type: 'warning'
 					});
 					return
 				}
 				if(this.Model2BackRatio <= 0) {
 					this.$message({
-						message: '请设置反面赔付率',
+						message: 'Please set negative loss rate',
 						type: 'warning'
 					});
 					return
@@ -1417,12 +1479,12 @@
 				this.curtain = true;
 				this.$contract.bankerChangeRatio(this.Model2FrontRatio, this.Model2BackRatio).then(data => {
 					this.$message({
-						message: '修改成功',
+						message: 'modify successfully',
 						type: 'success'
 					});
 					this.curtain = false;
 				}).catch((error) => {
-					this.$message.error('修改失败');
+					this.$message.error('fail to modify');
 					this.curtain = false;
 				});
 			},
@@ -1481,10 +1543,17 @@
 			
 			// 时间
 			giveNowTime () {
-				this.$contract.viewNowTime().then(data => {
-					if(this.newTimeTemp != data ) {
-						this.newTimeTemp = Number(data)
-						this.newTime = Number(data)
+				this.$contract.viewNowTime1().then(data => {
+					if(this.newTime1Temp != data ) {
+						this.newTime1Temp = Number(data)
+						this.newTime1 = Number(data)
+					}
+				})
+				// 
+				this.$contract.viewNowTime2().then(data => {
+					if(this.newTime2Temp != data ) {
+						this.newTime2Temp = Number(data)
+						this.newTime2 = Number(data)
 					}
 				})
 			},
@@ -1532,16 +1601,16 @@
 				this.bankViewMyHistoryLengthFn()
 			},
 			whileTime() {
-				this.newTime ++;
-				console.log(this.newTime,"-----------------")
-				if(Number(this.Model1ViewGame.time) + 150 > Number(this.newTime)) {
-					this.model1Time = Number(this.Model1ViewGame.time) + 150 - Number(this.newTime);
+				this.newTime1 ++;
+				this.newTime2 ++;  
+				if(Number(this.Model1ViewGame.time) + 150 > Number(this.newTime1)) {
+					this.model1Time = Number(this.Model1ViewGame.time) + 150 - Number(this.newTime1);
 				} else {
 					this.model1Time = "0"
 				}
 				console.log()
-				if(Number(this.Model2ViewGame.time) + 150 > Number(this.newTime)) {
-					this.model2Time = Number(this.Model2ViewGame.time) + 150 - Number(this.newTime);
+				if(Number(this.Model2ViewGame.time) + 150 > Number(this.newTime2)) {
+					this.model2Time = Number(this.Model2ViewGame.time) + 150 - Number(this.newTime2);
 				} else {
 					this.model2Time = "0"
 				}

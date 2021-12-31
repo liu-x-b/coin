@@ -2,6 +2,8 @@
 	<div class="bodys">
 		<div class="menu">
 			<div class="to-left clearfix"> <img src="../assets/zheng.png" class="left" alt=""> <span class="left">FLIPBTC</span> </div>
+			<div class="center">Balance : {{scale(Number(myBalance) + Number(totalReward))}}</div>
+			<!-- <div class="center">Balance : {{Number(myBalance) + Number(totalReward)}}</div> -->
 			<div class="to-right">
 				<el-dropdown trigger="click">
 					<span class="el-dropdown-link">
@@ -42,7 +44,10 @@
 
 <script>
 	import big from "big.js";
-	import { NumSplic } from "../unit/tool";
+
+	big.NE = -40
+	big.PE = 40
+	import { NumSplic , scale} from "../unit/tool";
 	export default {
 		data() {
 			return {
@@ -55,20 +60,62 @@
 				myAddress: undefined,
 				// 模式切换
 				mode: 0,
+				myBalance:0,
+				totalReward:0
 			};
 		},
 		methods: {
-			
+			scale(val) {
+				return scale(val)
+			},
 			// 加载钱包
 			loadingData() {
 				this.$contract.connectWallet().finally(() => {
 					let address = this.$contract.getCurrWalletAddress();
+					this.create();
 					if(address != undefined) {
 						this.myAddress = address.substr(0, 4) + "..." + address.substr(38, 4);
 					} else {
 						this.myAddress = address;
 					}
 				});
+			},
+			
+			// 余额
+			TokenBalanceFn() {
+				// model1 
+				this.$contract
+					.TokenBalance()
+					.then((data) => {
+						this.myBalance = 
+								big(data)
+								.div(10 ** 18)
+								.toString(); 
+					})
+			},
+			
+			// 计算可领取奖励
+    		routerViewCalcFn() { 
+    		  this.$contract
+    		    .routerViewCalc()
+    		    .then((data) => {
+    		      this.totalReward = 
+    		          big(data)
+    		            .div(10 ** 18)
+    		            .toString() 
+    		    });
+			},
+
+			create(){
+				this.TokenBalanceFn()
+				this.routerViewCalcFn()
+				clearInterval(this.fnHome);
+				this.fnHome = setInterval(this.whileFN, 3000);
+			},
+			
+			whileFN() { 
+				this.TokenBalanceFn(); 
+				this.routerViewCalcFn(); 
 			},
 			// 跳转
 			to(e) {
@@ -82,9 +129,8 @@
 			});
 		},
 
-		beforeDestroy() {
-			clearInterval(this.timer);
-			clearInterval(this.fn);
+		beforeDestroy() { 
+			clearInterval(this.fnHome);
 		},
 	};
 </script>
@@ -193,5 +239,12 @@
 	@media (max-width:767px) {
 		.mains{min-height: 500px;}
 		.menu{padding: 8px 10px;}
+	}
+	.center {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%,-50%);
+		color: #fff;
 	}
 </style>

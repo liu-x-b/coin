@@ -11,22 +11,23 @@
 		<div class="game-info-text">
 			<p>This is a fair, transparent, decentralized, multiplayer game to guess the pros and cons of BTC</p>
 <p>Buy TSB through USDT in the menu bar mall to participate in the game,</p>
-<p>Conversion ratio: 1USDT: 1000TSB (fixed ratio)</p>
+<p>Conversion ratio: 1USDT: 1000TSB</p>
 <p>Draw time: 150 seconds once</p>
 		</div>
 		<div class="game-info-title">How to play 1 introduction:</div>
 		<div class="game-info-text">
-			<p>Minimum bet amount: <span>100K</span>, enter the amount to bet positive and negative</p>
+			<p>Minimum bet amount: <span>50K</span> TSB, enter the pledge amount for both parties to bet, and players can only choose one side to bet in each round.</p>
+			<p> The game will start the "150-second bet countdown" when both parties are betting, the betting ends at 0 seconds, and the 15-second draw countdown will take place.</p>
 <p class="game-info-title-small">Profit rules:</p>
-<p class="game-info-text-samll">The total amount of the winner is greater than the total amount of the loser, and the winner will distribute the profit according to the proportion of the individual bet amount to the total bet amount of the winner</p>
-<p class="game-info-text-samll">If the total amount of the winner is equal to or less than the total amount of the loser, the winner will get a profit of 1:1, and the extra bet amount of the loser will be refunded according to the proportion.</p>
+<p class="game-info-text-samll">The winner wins the total pledge amount of the loser, and the winner will distribute the profit according to the proportion of the personal pledge amount and the total pledge amount.</p>
+<p class="game-info-text-samll">Note: Because players continue to make positive and negative pledges before the bet, its odds change in real time before the bet ends.</p>
 		</div>
 		<div class="game-info-title">How to play 2 introduction:</div>
 		<div class="game-info-text">
-			<p>The minimum amount to grab bankroll: <span>5M</span>,</p>
-<p>Any player can grab the dealer, the dealer with the largest amount</p>
-<p>The dealer can set the odds on both sides, the lowest odds are 1:1</p>
-<p>When the difference between the positive amount and the negative amount is greater than or equal to the dealer pledge amount, the player can only bet on the party with the smaller amount</p>
+			<p> Minimum amount to grab bankroll: <span>2M</span> TSB,</p>
+<p> After each round, there will be a 30-second grab time. Any player can grab the banker within these 30 seconds, as long as the pledge amount is greater than the current banker pledge deposit amount of <span>200K</span></p>
+<p>The dealer can set the respective odds of the front and back before grabbing the banker, with the lowest odds of 1:1.</p>
+<p>After determining who is the dealer, as long as anyone on either side of the bank makes a bet, the 150-second draw countdown starts, and the betting can be made within 150 seconds, and the draw is automatically drawn at 0 seconds. When one party's pledge deposit amount minus the other's pledge deposit amount is greater than the banker's pledge deposit amount.  This party cannot bet, only the other party</p>
 <p class="game-info-title-small">Profit rules:</p>
 <p class="game-info-text-samll">Pay out according to the odds set by the dealer</p>
 		</div>

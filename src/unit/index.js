@@ -302,7 +302,7 @@ const freeViewMyHistory = (index) => {
 }
 
 // 查询链上时间
-const viewNowTime = () => { 
+const viewNowTime1 = () => { 
   return commonCallAndHandler(contracts.freeContract.methods.viewTime);
 }
 
@@ -384,6 +384,11 @@ const bankerQuit = () => {
   return commonSend(contracts.bankerContract.methods.quit );
 } 
 
+// 查询链上时间
+const viewNowTime2 = () => { 
+  return commonCallAndHandler(contracts.bankerContract.methods.viewTime);
+}
+
 
 
 //                        router
@@ -441,7 +446,8 @@ export default {
   connectWallet,
 
   // nowTime
-  viewNowTime,
+  viewNowTime1,
+  viewNowTime2,
 
   // token
   TokenAllowance,

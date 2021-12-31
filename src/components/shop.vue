@@ -144,7 +144,7 @@ export default {
       if(this.buy > 0){
       }else{
         this.$message({
-          message: '输入金额不能为零',
+          message: 'The input amount cannot be zero',
           type: 'warning'
         });
         return 
@@ -154,19 +154,19 @@ export default {
         this.buy = null;
         this.buyGet = 0,
         this.$message({
-          message: '兑换成功',
+          message: 'For successful',
           type: 'success'
         });
         this.curtain = false;
       }).catch(error => {
-        this.$message.error('兑换失败');
+        this.$message.error('For failure');
         this.curtain = false;
       })
     },
     GetRewardFn(){ 
       if(this.totalReward == 0){ 
         this.$message({
-          message: '暂无领取',
+          message: 'For failure',
           type: 'warning'
         });
         return 
@@ -174,12 +174,12 @@ export default {
       this.curtain = true;
       this.$contract.routerGetReward().then(data=>{  
         this.$message({
-          message: '领取成功',
+          message: 'Get the success',
           type: 'success'
         });
         this.curtain = false;
       }).catch(error => {
-        this.$message.error('领取失败');
+        this.$message.error('Get the failure');
         this.curtain = false;
       })
     },
@@ -187,7 +187,7 @@ export default {
       if(this.sell > 0){
       }else { 
         this.$message({
-          message: '输入金额不能为零',
+          message: 'The input amount cannot be zero',
           type: 'warning'
         });
         return
@@ -197,12 +197,12 @@ export default {
         this.sell = null;
         this.sellGet = 0;
         this.$message({
-          message: '兑换成功',
+          message: 'For successful',
           type: 'success'
         });
         this.curtain = false;
       }).catch(error => {
-        this.$message.error('兑换失败');
+        this.$message.error('For failure');
         this.curtain = false;
       })
 
@@ -250,12 +250,12 @@ export default {
       this.curtain = true;
       this.$contract.USDTApprove(this.$contract.getContractsAddress().shop).then(data => {
         this.$message({
-          message: '授权成功',
+          message: 'Authorization success',
           type: 'success'
         });
         this.curtain = false;
       }).catch(error => {
-        this.$message.error('授权失败');
+        this.$message.error('Authorization failure');
         this.curtain = false;
       })
     },
@@ -264,12 +264,12 @@ export default {
       this.curtain = true;
       this.$contract.TokenApprove(this.$contract.getContractsAddress().shop).then(data => {
         this.$message({
-          message: '授权成功',
+          message: 'Authorization success',
           type: 'success'
         });
         this.curtain = false;
       }).catch(error => {
-        this.$message.error('授权失败');
+        this.$message.error('Authorization failure');
         this.curtain = false;
       })
     },

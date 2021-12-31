@@ -43,13 +43,13 @@ export default {
         this.curtain = true;
         this.$contract.freeGetMyReward().then(data => {
           this.$message({
-            message: '领取成功',
+            message: 'Get the success',
             type: 'success'
           }); 
           this.curtain = false;
         })
         .catch((error) => {
-          this.$message.error('领取失败');
+          this.$message.error('Get the failure');
           this.curtain = false;
         })
     },
@@ -58,13 +58,13 @@ export default {
         this.curtain = true;
         this.$contract.bankGetMyReward().then(data => {
           this.$message({
-            message: '领取成功',
+            message: 'Get the success',
             type: 'success'
           }); 
           this.curtain = false;
         })
         .catch((error) => {
-          this.$message.error('领取失败');
+          this.$message.error('Get the failure');
           this.curtain = false;
         })
     },
