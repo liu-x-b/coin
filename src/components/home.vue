@@ -19,12 +19,14 @@
 		</div>
 		<div class="big" v-show="mode == 0">
 			<div class="view">
-				<img :src="model1Img" v-if="model1Time == 0" alt="">
+				<img :src="model1Img" v-if="Model1ViewGame.time ==0" alt="">
 				<img :src="ImgDong" v-else alt="">
 				<p v-if="model1Time != 0">{{ model1Time }}</p>
 				<p v-else></p>
 				<div v-if="model1Time != 0" >Bet Countdown</div>
-				<div v-else-if="Model1ViewGame.time ==0" >Lottery Over Start Betting 
+				<div v-else-if="Model1ViewGame.time ==0" >Lottery Over 
+					<div style="margin:5px"></div>
+					 Start Betting 
 				</div>
 				<div v-else >
 					in The Lottery 
@@ -260,17 +262,21 @@
 			<div class="view" v-if="Model2Banker.time == 0 || Number(Model2Banker.time)+30 > newTime2">
 				<img :src="model2Img" alt="">
 				<p>{{ Number(Model2Banker.time)+30 - Number(newTime2) >0?Number(Model2Banker.time)+30 - Number(newTime2):0 }}</p>
-				<div>Grab Dealer Countdown</div>
+				<div>Grab Dealer 
+					<div style="margin:5px"></div>
+					Countdown</div>
 			</div>
 			<div class="view" v-else>
-				<img :src="model2Img" alt="" v-if="model2Time == 0">
+				<img :src="model2Img" alt="" v-if="Model2ViewGame.time ==0">
 				<img :src="ImgDong" alt="" v-else>
 
 				
 				<p v-if="model2Time != 0">{{ model2Time }}</p>
 				<p v-else></p>
 				<div v-if="model2Time != 0" >Bet Countdown</div>
-				<div v-else-if="Model2ViewGame.time ==0" >Lottery Over Start Betting 
+				<div v-else-if="Model2ViewGame.time ==0" >Lottery Over 
+					
+					<div style="margin:5px"></div>Start Betting 
 				</div>
 				<div v-else >
 					in The Lottery 
@@ -852,6 +858,7 @@
 						// 查询最高期数
 						this.$contract.freeViewHeightPeriods().then(height => {
 							this.$contract.freeViewGame(Number(height) - 1).then((msg) => {
+								console.log(msg.random,"zhengfan")
 								if(msg.random == 0) {
 									this.model1Img = require("../assets/zheng.png");
 								} else {
@@ -867,6 +874,21 @@
 						this.$message.error('The lottery failure');
 						this.curtain = false;
 					});
+			},
+			// model1 上一期
+			model1Last() {
+				this.$contract.freeViewHeightPeriods().then(height => {
+					if(height!=0) { 
+						this.$contract.freeViewGame(Number(height) - 1).then((msg) => {
+							console.log(msg.random,"zhengfan")
+							if(msg.random == 0) {
+								this.model1Img = require("../assets/zheng.png");
+							} else {
+								this.model1Img = require("../assets/fan.png");
+							}
+						})
+					}
+				})
 			},
 			// mode1查询当前最高期数
 			freeViewHeightPeriodsFn() {
@@ -1187,6 +1209,24 @@
 						this.curtain = false;
 					});
 			},
+			// 模式2上一期 
+			model2Last() {
+				// 查询最高期数
+				this.$contract.bankerViewHeightPeriods().then(height => {
+					if(height!=0){ 
+						this.$contract.bankerViewGame(Number(height) - 1).then((msg) => { 
+							if(msg.random == 0) {
+								this.model2Img = require("../assets/zheng.png");
+							} else {
+								this.model2Img = require("../assets/fan.png");
+							}
+							// setTimeout(() => {
+							// 	this.model2Img = require("../assets/BTC.gif");
+							// }, 3000)
+						})
+					}
+				})
+			},
 			// mode2查询当前最高期数
 			bankerViewHeightPeriodsFn() {
 				this.$contract.bankerViewHeightPeriods().then((data) => {
@@ -1357,14 +1397,14 @@
 			},
 			// 抢庄
 			giveBanker() {
-				if(this.Model2FrontRatio <= 1) {
+				if(this.Model2FrontRatio < 1) {
 					this.$message({
 						message: 'Please set the positive loss ratio, minimum 1',
 						type: 'warning'
 					});
 					return
 				}
-				if(this.Model2BackRatio <= 1) {
+				if(this.Model2BackRatio < 1) {
 					this.$message({
 						message: 'Please set the negative loss ratio, the minimum is 1',
 						type: 'warning'
@@ -1568,6 +1608,7 @@
 				this.freeViewContraryNumFn();
 				this.freeViewUserFn();
 				this.freeViewMyHistoryLengthFn(); 
+				this.model1Last(); 
 
 				this.bankerViewHeightPeriodsFn();
 				this.bankerViewFrontNumFn();
@@ -1576,6 +1617,7 @@
 				this.bankerNowBankerFn()
 				this.bankMaxDepositFn()
 				this.bankViewMyHistoryLengthFn()
+				this.model2Last()
 
 				clearInterval(this.fn);
 				this.fn = setInterval(this.whileFN, 3000);
@@ -1591,6 +1633,7 @@
 				this.freeViewContraryNumFn();
 				this.freeViewUserFn();
 				this.freeViewMyHistoryLengthFn();
+				this.model1Last();
 
 				this.bankerViewHeightPeriodsFn();
 				this.bankerViewFrontNumFn();
@@ -1599,6 +1642,7 @@
 				this.bankerNowBankerFn()
 				this.bankMaxDepositFn()
 				this.bankViewMyHistoryLengthFn()
+				this.model2Last()
 			},
 			whileTime() {
 				this.newTime1 ++;

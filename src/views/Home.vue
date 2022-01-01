@@ -122,7 +122,7 @@
 				this.$router.push(e);
 			},
 		},
-		mounted() {
+		mounted() { 
 			this.loadingData();
 			this.$eventHub.$on("walletChanged", () => {
 				this.loadingData();
