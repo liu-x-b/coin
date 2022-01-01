@@ -24,7 +24,7 @@
 				<p v-if="model1Time != 0">{{ model1Time }}</p>
 				<p v-else></p>
 				<div v-if="model1Time != 0" >Bet Countdown</div>
-				<div v-else-if="Model1ViewGame.time ==0" >Lottery Over 
+				<div v-else-if="Model1ViewGame.time ==0" >Grab Dealer End
 					<div style="margin:5px"></div>
 					 Start Betting 
 				</div>
@@ -261,20 +261,18 @@
 		<div class="big" v-show="mode == 1">
 			<div class="view" v-if="Model2Banker.time == 0 || Number(Model2Banker.time)+30 > newTime2">
 				<img :src="model2Img" alt="">
-				<p>{{ Number(Model2Banker.time)+30 - Number(newTime2) >0?Number(Model2Banker.time)+30 - Number(newTime2):0 }}</p>
-				<div>Grab Dealer 
-					<div style="margin:5px"></div>
-					Countdown</div>
+				<p v-if="Model2Banker.time == 0"> 30 </p>
+				<p v-else>{{ Number(Model2Banker.time)+30 - Number(newTime2) >0?Number(Model2Banker.time)+30 - Number(newTime2):0 }}</p>
+				<div>Grab Dealer Countdown</div>
 			</div>
 			<div class="view" v-else>
 				<img :src="model2Img" alt="" v-if="Model2ViewGame.time ==0">
 				<img :src="ImgDong" alt="" v-else>
 
-				
 				<p v-if="model2Time != 0">{{ model2Time }}</p>
 				<p v-else></p>
 				<div v-if="model2Time != 0" >Bet Countdown</div>
-				<div v-else-if="Model2ViewGame.time ==0" >Lottery Over 
+				<div v-else-if="Model2ViewGame.time ==0" >Grab Dealer End
 					
 					<div style="margin:5px"></div>Start Betting 
 				</div>
@@ -357,12 +355,7 @@
             	</span>
                         <div class="progress-right">
 							<div class="progress-right-main">
-								<span v-if=" 
-              						Model2User.start &&
-              						Model2User.random == 0 &&
-              						Model2User.userIndex == Model2HeightPeriods"
-								>{{scale(Model2User.amount)}} TSB</span>
-								<span v-else>0 K TSB</span>
+								<span >{{scale(Model2ViewGame.frontMoney)}} TSB</span>
 								<div class="progress-right-mains" :style="'width:'+Model2FrontMaxratio+'%'"></div>
 							</div>
 						</div>
@@ -415,12 +408,7 @@
             	</span>
 						<div class="progress-right">
 							<div class="progress-right-main">								
-								<span v-if=" 
-              						Model2User.start &&
-              						Model2User.random == 1 &&
-              						Model2User.userIndex == Model2HeightPeriods"
-								>{{scale(Model2User.amount)}} TSB</span>
-								<span v-else>0 K TSB</span>
+								<span >{{scale(Model2ViewGame.contraryMoney)}} TSB</span> 
 								<div class="progress-right-mains" :style="'width:'+ Model2ContraryMaxratio+'%'"></div>
 							</div>
 						</div>
