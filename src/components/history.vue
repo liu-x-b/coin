@@ -2,7 +2,7 @@
   <div class="history">
   	<div class="wallte">
 				<div class="wallte-link" v-if="myAddress == undefined" @click="linkPay">
-					wallet address
+					connect wallet
 				</div>
 				<div class="wallte-link" v-else>{{ myAddress }}</div>
 			</div>
@@ -83,6 +83,7 @@ export default {
   data() {
     return {
     	myAddress: undefined,
+    	myAddressAll: undefined,
       model: 0,
       model1: [
         // {
@@ -303,6 +304,12 @@ export default {
       this.$contract.connectWallet().finally(() => {
         let address = this.$contract.getCurrWalletAddress();
         this.create();
+			  if(address != undefined) {
+			  	this.myAddress = address.substr(0, 4) + "..." + address.substr(38, 4);
+			  } else {
+			  	this.myAddress = address;
+			  }
+			  this.myAddressAll = address
       });
     },
     create() {

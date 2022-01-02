@@ -22,7 +22,7 @@
 		</div>
 		<div class="mains">
 			<div class="text" v-if="myAddress == undefined">
-				<p>There are no provider to interact with Thundercore network</p>
+				<p>There are no provider to interact with BSC network</p>
 			
 				<p>
 					you can use,

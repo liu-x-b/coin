@@ -19,12 +19,12 @@
 		</div>
 		<div class="big" v-show="mode == 0">
 			<div class="view">
-				<img :src="model1Img" v-if="Model1ViewGame.time ==0" alt="">
+				<img :src="model1Img" v-if="Model1ViewGame.time ==0"  alt="">
 				<img :src="ImgDong" v-else alt="">
 				<p v-if="model1Time != 0">{{ model1Time }}</p>
 				<p v-else></p>
 				<div v-if="model1Time != 0" >Bet Countdown</div>
-				<div v-else-if="Model1ViewGame.time ==0" >Grab Dealer End
+				<div v-else-if="Model1ViewGame.time ==0" >Lottery Over
 					<div style="margin:5px"></div>
 					 Start Betting 
 				</div>
@@ -983,8 +983,6 @@
 							arr.push(i - 1);
 						}
 					}
-					// console.log(length , "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊")
-					// console.log(arr,"不不不不不不不不不不不不不不不不不不不")
 					this.freeViewMyHistoryFn(arr);
 				});
 			},

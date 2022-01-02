@@ -2,7 +2,7 @@
 	<div>
 	<div class="wallte">
 				<div class="wallte-link" v-if="myAddress == undefined" @click="linkPay">
-					wallet address
+					connect wallet
 				</div>
 				<div class="wallte-link" v-else>{{ myAddress }}</div>
 			</div>
@@ -39,7 +39,8 @@
 	export default {
 		data() {
 			return {
-				myAddress: undefined,
+	  			myAddress: undefined,
+	  			myAddressAll: undefined,
 			}
 		},
 		methods: {
@@ -48,7 +49,25 @@
 			linkPay() {
 				this.$contract.initWeb3();
 			},
-		}
+		    // 加载钱包
+			loadingData() {
+				this.$contract.connectWallet().finally(() => {
+					let address = this.$contract.getCurrWalletAddress();
+					if(address != undefined) {
+						this.myAddress = address.substr(0, 4) + "..." + address.substr(38, 4);
+					} else {
+						this.myAddress = address;
+					}
+					this.myAddressAll = address
+				});
+			},
+		},
+		mounted() { 
+  		  this.loadingData();
+  		  this.$eventHub.$on("walletChanged", () => {
+  		    this.loadingData();
+  		  });
+  		},
 	}
 </script>
 

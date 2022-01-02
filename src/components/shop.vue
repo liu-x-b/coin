@@ -5,7 +5,7 @@
 	</div>
 	<div class="wallte">
 		<div class="wallte-link" v-if="myAddress == undefined" @click="linkPay">
-			wallet address
+			connect wallet
 			</div>
 			<div class="wallte-link" v-else>{{ myAddress }}</div>
 		</div>
@@ -82,6 +82,7 @@ export default {
   data() {
     return {
 	  myAddress: undefined,
+	  myAddressAll: undefined,
       curtain: false,
       model: 0,
       buy: null,
