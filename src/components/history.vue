@@ -113,7 +113,19 @@ export default {
         //   amount: "10000"
         // }
       ],
-      model2page: 0
+      model2page: 0,
+
+
+
+      Model2User: {},
+      Model2HeightPeriods: 0,
+
+
+
+
+
+      Model1User: {},
+      Model1HeightPeriods: 0,
     };
   },
 
@@ -131,7 +143,8 @@ export default {
 
     freeViewMyHistoryFn(data) {
       let arr = [];
-      for (let i = data * 10 - 10; i < data * 10; i++) {
+      
+      for (let i = this.model1page - ((data-1) * 10); i > this.model1page - (data * 10) && i>=0; i--) {
         if (i < this.model1page) {
           arr.push(i);
         }
@@ -140,9 +153,25 @@ export default {
         arr.map(data => {
           return this.$contract.freeViewMyHistory(data);
         })
-      ).then(data => {
-        let newArr = [];
-        data.map(element => {
+      ).then(async arrdata => {
+					let newArr = []; 
+					if(this.Model1User.amount != 0 && this.Model1HeightPeriods != this.Model1User.userIndex && data == 1) {
+						await this.$contract.freeViewGame(this.Model1User.userIndex).then(newData => {
+							let newAddArr = {}
+							newAddArr.number = newData.number
+							newAddArr.state = this.Model1User.random == newData.random
+							newAddArr.buy = this.Model1User.random
+							if(this.Model1User.random == newData.random) {
+							// 	// win
+								newAddArr.amount = NumSplic(this.Model1User.amount* 95 /100,4)
+							}else {
+							// 	// lost
+								newAddArr.amount = this.Model1User.amount
+							}
+							newArr.push(newAddArr)
+						})
+					}
+        arrdata.map(element => {
           let obj = element;
           obj.amount = NumSplic(
             big(element.amount)
@@ -170,20 +199,39 @@ export default {
       });
     },
     // model2
-    bankViewMyHistoryFn(data) {
+    bankViewMyHistoryFn(data) { 
       let arr = [];
-      for (let i = data * 10 - 10; i < data * 10; i++) {
+      for (let i = this.model2page - ((data-1) * 10); i > this.model2page - (data * 10) && i>=0; i--) {
         if (i < this.model2page) {
           arr.push(i);
+          console.log(i,"for")      
         }
       }
       Promise.all(
         arr.map(data => {
           return this.$contract.bankViewMyHistory(data);
         })
-      ).then(data => {
-        let newArr = [];
-        data.map(element => {
+      ).then(async arrdata => {
+				let newArr = [];
+				if(this.Model2User.amount != 0 && this.Model2HeightPeriods != this.Model2User.userIndex && data == 1) {
+					await this.$contract.bankerViewGame(this.Model2User.userIndex).then(newData => {
+						console.log(newAddArr,"new BankerViewGame")
+						let newAddArr = {}
+						newAddArr.number = newData.number
+						newAddArr.state = this.Model2User.random == newData.random
+						newAddArr.buy = this.Model2User.random
+						let myRatio = this.Model2User.random == 0 ? newData.frontRatio : newData.contraryRatio
+						if(this.Model2User.random == newData.random) {
+							// win
+							newAddArr.amount = NumSplic(this.Model2User.amount*myRatio / 10 * 95 /100,4)
+						}else {
+							// lost
+							newAddArr.amount = this.Model2User.amount
+						}
+						newArr.push(newAddArr)
+					})
+				}
+        arrdata.map(element => {
           let obj = element;
           obj.amount = NumSplic(
             big(element.amount)
@@ -210,6 +258,46 @@ export default {
         this.model2page = Number(data);
       });
     },
+    // model2查询用户
+		bankerViewUserFn() {
+			this.$contract.bankerViewUser().then((data) => {
+				let obj = data;
+				obj.amount = NumSplic(
+					big(data.amount)
+					.div(10 ** 18)
+					.toString(),
+					4
+				);
+				this.Model2User = obj; 
+			});
+    },
+    // mode2查询当前最高期数
+		bankerViewHeightPeriodsFn() {
+		  this.$contract.bankerViewHeightPeriods().then((data) => {
+				this.Model2HeightPeriods = data;
+			});
+    },
+    
+    // model1查询用户
+		freeViewUserFn() {
+			this.$contract.freeViewUser().then((data) => {
+				let obj = data;
+				obj.amount = NumSplic(
+					big(data.amount)
+					.div(10 ** 18)
+					.toString(),
+					4
+				);
+				this.Model1User = obj;
+				// console.log(this.Model1User);
+			});
+    },
+    // mode1查询当前最高期数
+		freeViewHeightPeriodsFn() {
+			this.$contract.freeViewHeightPeriods().then((data) => {
+				this.Model1HeightPeriods = data; 
+			});
+		},
     // 加载钱包
     loadingData() {
       this.$contract.connectWallet().finally(() => {
@@ -220,12 +308,20 @@ export default {
     create() {
       this.freeViewMyHistoryLengthFnFirst();
       this.bankViewMyHistoryLengthFnFirst();
+      this.bankerViewHeightPeriodsFn();
+      this.bankerViewUserFn();
+      this.freeViewUserFn();
+      this.freeViewHeightPeriodsFn();
       clearInterval(this.fnHistory);
       this.fnHistory = setInterval(this.whileFN, 3000);
     },
     whileFN() {
       this.freeViewMyHistoryLengthFn();
       this.bankViewMyHistoryLengthFn();
+      this.bankerViewHeightPeriodsFn();
+      this.bankerViewUserFn();
+      this.freeViewUserFn();
+      this.freeViewHeightPeriodsFn();
     }
   },
   mounted() {

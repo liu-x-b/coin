@@ -979,10 +979,12 @@
 							arr.push(i - 1);
 						}
 					} else {
-						for(let i = length; i >= length - 10; i--) {
-							arr.push(i);
+						for(let i = length; i > length - 10; i--) {
+							arr.push(i - 1);
 						}
 					}
+					// console.log(length , "啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊")
+					// console.log(arr,"不不不不不不不不不不不不不不不不不不不")
 					this.freeViewMyHistoryFn(arr);
 				});
 			},
@@ -992,8 +994,25 @@
 					arr.map(data => {
 						return this.$contract.freeViewMyHistory(data);
 					})
-				).then(data => {
+				).then(async data => {
 					let newArr = [];
+					console.log(this.Model1User.amount != 0 && this.Model1HeightPeriods != this.Model1User.userIndex,"log")
+					if(this.Model1User.amount != 0 && this.Model1HeightPeriods != this.Model1User.userIndex) {
+						await this.$contract.freeViewGame(this.Model1User.userIndex).then(newData => {
+							let newAddArr = {}
+							newAddArr.number = newData.number
+							newAddArr.state = this.Model1User.random == newData.random
+							newAddArr.buy = this.Model1User.random
+							if(this.Model1User.random == newData.random) {
+							// 	// win
+								newAddArr.amount = NumSplic(this.Model1User.amount* 95 /100,4)
+							}else {
+							// 	// lost
+								newAddArr.amount = this.Model1User.amount
+							}
+							newArr.push(newAddArr)
+						})
+					}
 					data.map(element => {
 						let obj = element;
 						obj.amount = NumSplic(
@@ -1003,6 +1022,7 @@
 							4
 						);
 						newArr.push(obj);
+						console.log(element,"newaaaaaaaaaaaaaaaaaaaaaaa")
 					});
 					this.Model1MyHistory = newArr;
 					console.log(data)
@@ -1527,7 +1547,7 @@
 							arr.push(i - 1);
 						}
 					} else {
-						for(let i = length; i >= length - 10; i--) {
+						for(let i = length; i > length - 10; i--) {
 							arr.push(i-1);
 						}
 					}
@@ -1541,8 +1561,26 @@
 					arr.map(data => {
 						return this.$contract.bankViewMyHistory(data);
 					})
-				).then(data => {
+				).then(async data => {
 					let newArr = [];
+					if(this.Model2User.amount != 0 && this.Model2HeightPeriods != this.Model2User.userIndex) {
+						await this.$contract.bankerViewGame(this.Model2User.userIndex).then(newData => {
+							console.log(newAddArr,"new BankerViewGame")
+							let newAddArr = {}
+							newAddArr.number = newData.number
+							newAddArr.state = this.Model2User.random == newData.random
+							newAddArr.buy = this.Model2User.random
+							let myRatio = this.Model2User.random == 0 ? newData.frontRatio : newData.contraryRatio
+							if(this.Model2User.random == newData.random) {
+								// win
+								newAddArr.amount = NumSplic(this.Model2User.amount*myRatio / 10 * 95 /100,4)
+							}else {
+								// lost
+								newAddArr.amount = this.Model2User.amount
+							}
+							newArr.push(newAddArr)
+						})
+					}
 					data.map(element => {
 						let obj = element;
 						obj.amount = NumSplic(
