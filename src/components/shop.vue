@@ -210,7 +210,7 @@ export default {
     },
     // 查询授权额度
     queryAllowance() {
-      console.log('dasd')
+      // console.log('dasd')
       // Token
       this.$contract
         .USDTAllowance(this.$contract.getContractsAddress().shop)

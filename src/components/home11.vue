@@ -698,7 +698,7 @@
 						}
 					});
 					this.model1History = newArr;
-					console.log(this.model1History)
+					// console.log(this.model1History)
 				});
 			},
 			// model1查询期数详细信息
@@ -782,7 +782,7 @@
 						newArr.push(obj);
 					});
 					this.Model1MyHistory = newArr;
-					console.log(data)
+					// console.log(data)
 				});
 			},
 
@@ -1290,7 +1290,7 @@
 						newArr.push(obj);
 					});
 					this.Model2MyHistory = newArr;
-					console.log(newArr, "newArr")
+					// console.log(newArr, "newArr")
 				});
 			},
 			//                                                    加载钱包后操作
@@ -1336,7 +1336,7 @@
 				} else {
 					this.model1Time = "0"
 				}
-				console.log()
+				// console.log()
 				if(Number(this.Model2ViewGame.time) + 150 > Number(this.newTime)) {
 					this.model2Time = Number(this.Model2ViewGame.time) + 150 - Number(this.newTime);
 				} else {

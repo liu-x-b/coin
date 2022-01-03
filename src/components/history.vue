@@ -188,14 +188,14 @@ export default {
 
     freeViewMyHistoryLengthFnFirst() {
       this.$contract.freeViewMyHistoryLength().then(data => {
-        console.log(data);
+        // console.log(data);
         this.model1page = Number(data);
         this.freeViewMyHistoryFn(1);
       });
     },
     freeViewMyHistoryLengthFn() {
       this.$contract.freeViewMyHistoryLength().then(data => {
-        console.log(data);
+        // console.log(data);
         this.model1page = Number(data);
       });
     },
@@ -205,7 +205,7 @@ export default {
       for (let i = this.model2page - ((data-1) * 10); i > this.model2page - (data * 10) && i>=0; i--) {
         if (i < this.model2page) {
           arr.push(i);
-          console.log(i,"for")      
+          // console.log(i,"for")      
         }
       }
       Promise.all(
@@ -216,7 +216,7 @@ export default {
 				let newArr = [];
 				if(this.Model2User.amount != 0 && this.Model2HeightPeriods != this.Model2User.userIndex && data == 1) {
 					await this.$contract.bankerViewGame(this.Model2User.userIndex).then(newData => {
-						console.log(newAddArr,"new BankerViewGame")
+						// console.log(newAddArr,"new BankerViewGame")
 						let newAddArr = {}
 						newAddArr.number = newData.number
 						newAddArr.state = this.Model2User.random == newData.random
@@ -248,14 +248,14 @@ export default {
 
     bankViewMyHistoryLengthFnFirst() {
       this.$contract.bankViewMyHistoryLength().then(data => {
-        console.log(data);
+        // console.log(data);
         this.model2page = Number(data);
         this.bankViewMyHistoryFn(1);
       });
     },
     bankViewMyHistoryLengthFn() {
       this.$contract.bankViewMyHistoryLength().then(data => {
-        console.log(data);
+        // console.log(data);
         this.model2page = Number(data);
       });
     },

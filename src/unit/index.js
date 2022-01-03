@@ -95,11 +95,11 @@ const getNetwork = () => {
       connectedNetwork = ''
     }
   })
-}
+  
 
-let oklinkInfo=[{
-    // chainId: '0x38',
-    chainId: '0x61',
+  let oklinkInfo=[{
+    chainId: '0x38',
+    // chainId: '0x61',
     chainName: 'BSC',
     nativeCurrency:
         {
@@ -109,22 +109,23 @@ let oklinkInfo=[{
         },
     rpcUrls: ['https://bsc-dataseed1.binance.org'],
     blockExplorerUrls: ['https://bscscan.com'],
-}]
-// let oklinkInfo=[{
-//     chainId: '0x4',
-//     chainName: 'Rinkeby',
-//     nativeCurrency:
-//         {
-//             name: 'ETH',
-//             symbol: 'ETH',
-//             decimals: 18
-//         },
-//     rpcUrls: ['https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
-//     blockExplorerUrls: ['https://rinkeby.etherscan.io'],
-// }]
+  }]
+  // let oklinkInfo=[{
+  //     chainId: '0x4',
+  //     chainName: 'Rinkeby',
+  //     nativeCurrency:
+  //         {
+  //             name: 'ETH',
+  //             symbol: 'ETH',
+  //             decimals: 18
+  //         },
+  //     rpcUrls: ['https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+  //     blockExplorerUrls: ['https://rinkeby.etherscan.io'],
+  // }]
 
 
-window.ethereum.request({method: 'wallet_addEthereumChain', params:oklinkInfo})
+  window.ethereum.request({method: 'wallet_addEthereumChain', params:oklinkInfo})
+}
 
 
 const connectWallet = () => {

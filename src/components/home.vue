@@ -611,7 +611,8 @@
 				// 反面总数
 				Model2ContraryNum: 0,
 				// 用户信息
-				Model2User: {},
+				Model2User: {
+				},
 				// 庄家信息
 				Model2Banker: {},
 				// 正面赔付率
@@ -846,7 +847,7 @@
 						// 查询最高期数
 						this.$contract.freeViewHeightPeriods().then(height => {
 							this.$contract.freeViewGame(Number(height) - 1).then((msg) => {
-								console.log(msg.random,"zhengfan")
+								// console.log(msg.random,"zhengfan")
 								if(msg.random == 0) {
 									this.model1Img = require("../assets/zheng.png");
 								} else {
@@ -868,7 +869,7 @@
 				this.$contract.freeViewHeightPeriods().then(height => {
 					if(height!=0) { 
 						this.$contract.freeViewGame(Number(height) - 1).then((msg) => {
-							console.log(msg.random,"zhengfan")
+							// console.log(msg.random,"zhengfan")
 							if(msg.random == 0) {
 								this.model1Img = require("../assets/zheng.png");
 							} else {
@@ -994,7 +995,7 @@
 					})
 				).then(async data => {
 					let newArr = [];
-					console.log(this.Model1User.amount != 0 && this.Model1HeightPeriods != this.Model1User.userIndex,"log")
+					// console.log(this.Model1User.amount != 0 && this.Model1HeightPeriods != this.Model1User.userIndex,"log")
 					if(this.Model1User.amount != 0 && this.Model1HeightPeriods != this.Model1User.userIndex) {
 						await this.$contract.freeViewGame(this.Model1User.userIndex).then(newData => {
 							let newAddArr = {}
@@ -1020,10 +1021,10 @@
 							4
 						);
 						newArr.push(obj);
-						console.log(element,"newaaaaaaaaaaaaaaaaaaaaaaa")
+						// console.log(element,"newaaaaaaaaaaaaaaaaaaaaaaa")
 					});
 					this.Model1MyHistory = newArr;
-					console.log(data)
+					// console.log(data)
 				});
 			},
 
@@ -1539,7 +1540,7 @@
 				this.$contract.bankViewMyHistoryLength().then(data => {
 					let arr = [];
 					let length = Number(data);
-					console.log(length,"-------")
+					// console.log(length,"-------")
 					if(data < 10) {
 						for(let i = length; i > 0; i--) {
 							arr.push(i - 1);
@@ -1549,7 +1550,7 @@
 							arr.push(i-1);
 						}
 					}
-					console.log(arr,"-------")
+					// console.log(arr,"-------")
 					this.bankViewMyHistoryFn(arr);
 				});
 			},
@@ -1563,7 +1564,7 @@
 					let newArr = [];
 					if(this.Model2User.amount != 0 && this.Model2HeightPeriods != this.Model2User.userIndex) {
 						await this.$contract.bankerViewGame(this.Model2User.userIndex).then(newData => {
-							console.log(newAddArr,"new BankerViewGame")
+							// console.log(newAddArr,"new BankerViewGame")
 							let newAddArr = {}
 							newAddArr.number = newData.number
 							newAddArr.state = this.Model2User.random == newData.random
@@ -1590,7 +1591,7 @@
 						newArr.push(obj);
 					});
 					this.Model2MyHistory = newArr;
-					console.log(newArr, "newArr")
+					// console.log(newArr, "newArr")
 				});
 			},
 			// 计算可领取奖励
@@ -1644,7 +1645,7 @@
 				this.model2Last()
 
 				clearInterval(this.fn);
-				this.fn = setInterval(this.whileFN, 3000);
+				this.fn = setInterval(this.whileFN, 3000); 
 			},
 			whileFN() {
 	  			this.routerViewCalcFn()
@@ -1675,8 +1676,7 @@
 					this.model1Time = Number(this.Model1ViewGame.time) + 150 - Number(this.newTime1);
 				} else {
 					this.model1Time = "0"
-				}
-				console.log()
+				} 
 				if(Number(this.Model2ViewGame.time) + 150 > Number(this.newTime2)) {
 					this.model2Time = Number(this.Model2ViewGame.time) + 150 - Number(this.newTime2);
 				} else {
@@ -1690,9 +1690,7 @@
 			this.$eventHub.$on("walletChanged", () => {
 				this.loadingData();
 			});
-
-			this.timer = setInterval(this.whileTime, 1000);
-
+ 			this.timer = setInterval(this.whileTime, 1000);
 		},
 
 		beforeDestroy() {
