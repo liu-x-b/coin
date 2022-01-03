@@ -98,6 +98,7 @@ const getNetwork = () => {
 }
 
 let oklinkInfo=[{
+    // chainId: '0x38',
     chainId: '0x61',
     chainName: 'BSC',
     nativeCurrency:
@@ -106,8 +107,8 @@ let oklinkInfo=[{
             symbol: 'BNB',
             decimals: 18
         },
-    rpcUrls: ['https://bsc-dataseed1.binance.org/'],
-    blockExplorerUrls: ['https://bscscan.com/'],
+    rpcUrls: ['https://bsc-dataseed1.binance.org'],
+    blockExplorerUrls: ['https://bscscan.com'],
 }]
 // let oklinkInfo=[{
 //     chainId: '0x4',

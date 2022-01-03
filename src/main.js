@@ -14,6 +14,9 @@ Vue.prototype.$eventHub = Vue.prototype.$eventHub || new Vue
  
 Vue.use(ElementUI,{locale});
   
+
+document.title = 'FLIPBTC';
+
 new Vue({
   router,
   store,

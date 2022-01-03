@@ -13,6 +13,7 @@
 <p>Buy TSB through USDT in the menu bar mall to participate in the game,</p>
 <p>Conversion ratio: 1USDT: 1000TSB</p>
 <p>Draw time: 150 seconds once</p>
+<p>Bitcoin belt B is positive on side and negative on the other side</p>
 		</div>
 		<div class="game-info-title">How to play 1 introduction:</div>
 		<div class="game-info-text">

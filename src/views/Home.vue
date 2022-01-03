@@ -1,7 +1,7 @@
 <template>
 	<div class="bodys">
 		<div class="menu">
-			<div class="to-left clearfix"> <img src="../assets/zheng.png" class="left" alt=""> <span class="left">FLIPBTC</span> </div>
+			<div class="to-left clearfix"> <img src="../assets/zheng.png" class="left" alt=""> <span class="left"></span> </div>
 			<div class="center">Balance : {{scale(Number(myBalance) + Number(totalReward))}}</div>
 			<!-- <div class="center">Balance : {{Number(myBalance) + Number(totalReward)}}</div> -->
 			<div class="to-right">
